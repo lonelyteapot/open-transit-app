@@ -9,11 +9,25 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
+    return MaterialApp(
+      title: 'Open Transit',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF25A18E)),
+        useMaterial3: true,
+      ),
+      home: Builder(
+        builder: (context) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Open Transit'),
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            ),
+            body: const Center(
+              child: Text('Hello World!'),
+            ),
+          );
+        },
       ),
     );
   }

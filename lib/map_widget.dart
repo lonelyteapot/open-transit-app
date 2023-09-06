@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:open_transit_app/private_constants.dart';
 
 class CustomMapWidget extends StatefulWidget {
   const CustomMapWidget({super.key});
@@ -17,8 +16,10 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
   @override
   void initState() {
     super.initState();
+    const mapboxAccessToken = String.fromEnvironment('MAPBOX_ACCESS_TOKEN');
+    assert(mapboxAccessToken.isNotEmpty);
     mapboxUrlTemplate =
-        'https://api.mapbox.com/styles/v1/lonelyteapot/cllhswcs9018i01qs99zdd7n6/tiles/256/{z}/{x}/{y}{r}?access_token=$MAPBOX_ACCESS_TOKEN';
+        'https://api.mapbox.com/styles/v1/lonelyteapot/cllhswcs9018i01qs99zdd7n6/tiles/256/{z}/{x}/{y}{r}?access_token=$mapboxAccessToken';
     mapController = MapController();
   }
 

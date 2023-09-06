@@ -1,6 +1,3 @@
-# Private constant values
-lib/private_constants.dart
-
 # Miscellaneous
 *.class
 *.log

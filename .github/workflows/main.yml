@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
       - name: Build
-        run: flutter build web --web-renderer canvaskit --dart-define MAPBOX_ACCESS_TOKEN=${{ secrets.MAPBOX_ACCESS_TOKEN }}
+        run: flutter build web --base-href="/open-transit-app/" --web-renderer canvaskit --dart-define MAPBOX_ACCESS_TOKEN=${{ secrets.MAPBOX_ACCESS_TOKEN }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:

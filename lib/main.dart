@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:open_transit_app/map_widget.dart';
 
 void main() {
   runApp(const MainApp());
@@ -23,9 +24,7 @@ class MainApp extends StatelessWidget {
               title: const Text('Open Transit'),
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             ),
-            body: const Center(
-              child: Text('Hello World!'),
-            ),
+            body: const CustomMapWidget(),
           );
         },
       ),

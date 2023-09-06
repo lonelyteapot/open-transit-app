@@ -1,4 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Required to download map tiles -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:label="open_transit_app"
         android:name="${applicationName}"

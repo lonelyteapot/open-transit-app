@@ -1,46 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:open_transit_app/map_widget.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:open_transit_app/main_view.dart';
+import 'package:open_transit_app/settings.dart';
 
-void main() {
-  runApp(const MainApp());
+Future<void> main() async {
+  runApp(const ProviderScope(child: MainApp()));
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends ConsumerWidget {
   const MainApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       title: 'Open Transit',
       debugShowCheckedModeBanner: false,
+      themeMode: ref.watch(settingsProvider).themeMode,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF25A18E)),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF25A18E),
+          brightness: Brightness.light,
+        ),
         useMaterial3: true,
       ),
-      home: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          title: const Text('Open Transit'),
-          forceMaterialTransparency: true,
-          centerTitle: true,
-          systemOverlayStyle: const SystemUiOverlayStyle(
-            statusBarColor: Colors.transparent,
-            statusBarIconBrightness: Brightness.dark,
-          ),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF25A18E),
+          brightness: Brightness.dark,
         ),
-        drawerEnableOpenDragGesture: false,
-        drawer: Drawer(
-          child: ListView(
-            children: const [
-              ListTile(
-                title: Text('Open Transit'),
-              ),
-            ],
-          ),
-        ),
-        body: const CustomMapWidget(),
+        useMaterial3: true,
       ),
+      home: const MainView(),
     );
   }
 }

@@ -40,7 +40,9 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
         maxZoom: 18,
         backgroundColor: Colors.white,
         interactionOptions: InteractionOptions(
-          flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+          flags: InteractiveFlag.all &
+              ~InteractiveFlag.rotate &
+              ~InteractiveFlag.flingAnimation,
         ),
       ),
       mapController: mapController,

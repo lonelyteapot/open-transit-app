@@ -54,7 +54,8 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
           urlTemplate: mapboxUrlTemplate,
           userAgentPackageName: 'open_transit.open_transit_app',
           maxZoom: 18,
-        ),
+          // Custom headers are disallowed due to an issue with CORS in Firefox
+        )..tileProvider.headers.remove('User-Agent'),
       ],
     );
   }

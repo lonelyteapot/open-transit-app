@@ -1,6 +1,6 @@
 {
-    "name": "open_transit_app",
-    "short_name": "open_transit_app",
+    "name": "Open Transit (Dev)",
+    "short_name": "Open Transit",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

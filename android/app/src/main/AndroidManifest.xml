@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:label="open_transit_app"
+        android:label="Open Transit (Dev)"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

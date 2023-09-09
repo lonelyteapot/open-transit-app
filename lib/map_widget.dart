@@ -1,9 +1,12 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:open_transit_app/settings.dart';
 import 'package:open_transit_app/utils.dart';
 
 const String _mapboxLightStyleId = 'cllhswcs9018i01qs99zdd7n6';
@@ -19,14 +22,14 @@ String _getMapboxAccessToken() {
   return mapboxAccessToken;
 }
 
-class CustomMapWidget extends StatefulWidget {
+class CustomMapWidget extends ConsumerStatefulWidget {
   const CustomMapWidget({super.key});
 
   @override
-  State<CustomMapWidget> createState() => _CustomMapWidgetState();
+  ConsumerState<CustomMapWidget> createState() => _CustomMapWidgetState();
 }
 
-class _CustomMapWidgetState extends State<CustomMapWidget> {
+class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
   late final MapController _mapController;
   late final StreamController<void> _tileLayerResetController;
   bool? wasDarkMode;
@@ -76,9 +79,10 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
         ),
       ),
       mapController: _mapController,
-      nonRotatedChildren: const [
+      nonRotatedChildren: [
         // TODO: Add attributions
         // https://docs.mapbox.com/help/getting-started/attribution/
+        if (ref.watch(settingsProvider).showDebugInfo) _buildDebugInfo(),
       ],
       children: [
         TileLayer(
@@ -92,9 +96,61 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
           userAgentPackageName: 'open_transit.open_transit_app',
           maxZoom: 18,
           reset: _tileLayerResetController.stream,
+          errorTileCallback: (tile, error, stackTrace) {
+            final c = tile.coordinates;
+            final errmsg =
+                error is DioException ? error.message : error.toString();
+            _showErrorSnackBar(
+              context,
+              'Failed to load a map tile at (${c.x}, ${c.y}, ${c.z}): $errmsg',
+            );
+          },
           // Custom headers are disallowed due to an issue with CORS in Firefox
         )..tileProvider.headers.remove('User-Agent'),
       ],
     );
   }
+
+  Widget _buildDebugInfo() {
+    return Padding(
+      padding: const EdgeInsets.all(4),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: StreamBuilder(
+          stream: _mapController.mapEventStream,
+          builder: (context, snapshot) {
+            final zoom = snapshot.data?.camera.zoom;
+            final center = snapshot.data?.camera.center;
+            final centerLat = center?.latitude.toStringAsFixed(6);
+            final centerLon = center?.longitude.toStringAsFixed(6);
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SelectableText('Center: $centerLat, $centerLon'),
+                SelectableText('Zoom: ${zoom?.toStringAsFixed(4)}'),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+void _showErrorSnackBar(BuildContext context, String text) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(
+        text,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onError,
+        ),
+      ),
+      backgroundColor: Theme.of(context).colorScheme.error,
+      behavior: SnackBarBehavior.floating,
+      showCloseIcon: true,
+      dismissDirection: DismissDirection.horizontal,
+      duration: const Duration(minutes: 1),
+    ),
+  );
 }

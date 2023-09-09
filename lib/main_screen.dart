@@ -33,16 +33,26 @@ class MainScreen extends ConsumerWidget {
                 title: Text('Open Transit'),
               ),
               const Spacer(),
-              const Center(child: Text('Theme')),
+              SwitchListTile(
+                title: const Text('Debug info'),
+                value: ref.watch(settingsProvider).showDebugInfo,
+                onChanged: (value) {
+                  ref.read(settingsProvider.notifier).setShowDebugInfo(value);
+                },
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 4),
+                child: Center(child: Text('Theme')),
+              ),
               Padding(
-                padding: const EdgeInsets.all(16).copyWith(top: 4),
+                padding: const EdgeInsets.all(16).copyWith(top: 0),
                 child: SegmentedButton<ThemeMode>(
                   showSelectedIcon: false,
                   selected: {ref.watch(settingsProvider).themeMode},
                   onSelectionChanged: (value) {
                     ref
                         .read(settingsProvider.notifier)
-                        .updateThemeMode(value.single);
+                        .setThemeMode(value.single);
                   },
                   segments: const [
                     ButtonSegment(
@@ -51,7 +61,7 @@ class MainScreen extends ConsumerWidget {
                     ),
                     ButtonSegment(
                       value: ThemeMode.system,
-                      label: Text('System'),
+                      label: Text('Auto'),
                     ),
                     ButtonSegment(
                       value: ThemeMode.dark,

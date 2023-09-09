@@ -14,6 +14,7 @@ dependencies:
   flutter_map_cancellable_tile_provider: ^1.0.0-preview
   flutter_riverpod: ^2.4.0
   latlong2: ^0.9.0
+  shared_preferences: ^2.2.1
 
 dev_dependencies:
   flutter_test:

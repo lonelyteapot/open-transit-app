@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:open_transit_app/main_view.dart';
+import 'package:open_transit_app/main_screen.dart';
 import 'package:open_transit_app/settings.dart';
 
 Future<void> main() async {
@@ -30,7 +30,7 @@ class MainApp extends ConsumerWidget {
         ),
         useMaterial3: true,
       ),
-      home: const MainView(),
+      home: const MainScreen(),
     );
   }
 }

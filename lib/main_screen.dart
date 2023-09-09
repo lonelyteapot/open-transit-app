@@ -5,8 +5,8 @@ import 'package:open_transit_app/map_widget.dart';
 import 'package:open_transit_app/settings.dart';
 import 'package:open_transit_app/utils.dart';
 
-class MainView extends ConsumerWidget {
-  const MainView({
+class MainScreen extends ConsumerWidget {
+  const MainScreen({
     super.key,
   });
 
@@ -20,7 +20,7 @@ class MainView extends ConsumerWidget {
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness:
-              context.isDarkMode ? Brightness.light : Brightness.dark,
+              Theme.of(context).isDark ? Brightness.light : Brightness.dark,
         ),
       ),
       drawerEnableOpenDragGesture: false,

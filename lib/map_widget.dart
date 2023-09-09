@@ -6,6 +6,19 @@ import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_ti
 import 'package:latlong2/latlong.dart';
 import 'package:open_transit_app/utils.dart';
 
+const String _mapboxLightStyleId = 'cllhswcs9018i01qs99zdd7n6';
+const String _mapboxDarkStyleId = 'clmb10kfe01ac01pfdic1deec';
+
+String _buildMapboxUrl({required String styleId, required String accessToken}) {
+  return 'https://api.mapbox.com/styles/v1/lonelyteapot/$styleId/tiles/256/{z}/{x}/{y}@2x?access_token=$accessToken';
+}
+
+String _getMapboxAccessToken() {
+  const mapboxAccessToken = String.fromEnvironment('MAPBOX_ACCESS_TOKEN');
+  assert(mapboxAccessToken.isNotEmpty);
+  return mapboxAccessToken;
+}
+
 class CustomMapWidget extends StatefulWidget {
   const CustomMapWidget({super.key});
 
@@ -35,7 +48,7 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
     _tileLayerResetController.add(null);
   }
 
-  void maybeDarkModeUpdated(final bool isDarkMode) {
+  void observeDarkMode(final bool isDarkMode) {
     if (wasDarkMode == null) {
       wasDarkMode = isDarkMode;
       return;
@@ -48,46 +61,40 @@ class _CustomMapWidgetState extends State<CustomMapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    maybeDarkModeUpdated(context.isDarkMode);
-    final mapboxStyleId = context.isDarkMode
-        ? 'clmb10kfe01ac01pfdic1deec'
-        : 'cllhswcs9018i01qs99zdd7n6';
-    const mapboxAccessToken = String.fromEnvironment('MAPBOX_ACCESS_TOKEN');
-    assert(mapboxAccessToken.isNotEmpty);
-    final mapboxUrlTemplate =
-        'https://api.mapbox.com/styles/v1/lonelyteapot/$mapboxStyleId/tiles/256/{z}/{x}/{y}@2x?access_token=$mapboxAccessToken';
-    return Container(
-      // Workaround: MapOptions.backgroundColor doesn't like to update on
-      // rebuilds for some reason, so it's set to transparent instead
-      color: context.isDarkMode ? const Color(0xFF292929) : Colors.white,
-      child: FlutterMap(
-        options: const MapOptions(
-          initialCenter: LatLng(56.32867, 44.00205),
-          minZoom: 2,
-          maxZoom: 18,
-          backgroundColor: Colors.transparent,
-          interactionOptions: InteractionOptions(
-            flags: InteractiveFlag.all &
-                ~InteractiveFlag.rotate &
-                ~InteractiveFlag.flingAnimation,
-          ),
+    observeDarkMode(Theme.of(context).isDark);
+    return FlutterMap(
+      options: MapOptions(
+        initialCenter: const LatLng(56.32867, 44.00205),
+        minZoom: 2,
+        maxZoom: 18,
+        backgroundColor:
+            Theme.of(context).isDark ? const Color(0xFF292929) : Colors.white,
+        interactionOptions: const InteractionOptions(
+          flags: InteractiveFlag.all &
+              ~InteractiveFlag.rotate &
+              ~InteractiveFlag.flingAnimation,
         ),
-        mapController: _mapController,
-        nonRotatedChildren: const [
-          // TODO: Add attributions
-          // https://docs.mapbox.com/help/getting-started/attribution/
-        ],
-        children: [
-          TileLayer(
-            tileProvider: CancellableNetworkTileProvider(),
-            urlTemplate: mapboxUrlTemplate,
-            userAgentPackageName: 'open_transit.open_transit_app',
-            maxZoom: 18,
-            reset: _tileLayerResetController.stream,
-            // Custom headers are disallowed due to an issue with CORS in Firefox
-          )..tileProvider.headers.remove('User-Agent'),
-        ],
       ),
+      mapController: _mapController,
+      nonRotatedChildren: const [
+        // TODO: Add attributions
+        // https://docs.mapbox.com/help/getting-started/attribution/
+      ],
+      children: [
+        TileLayer(
+          tileProvider: CancellableNetworkTileProvider(),
+          urlTemplate: _buildMapboxUrl(
+            styleId: Theme.of(context).isDark
+                ? _mapboxDarkStyleId
+                : _mapboxLightStyleId,
+            accessToken: _getMapboxAccessToken(),
+          ),
+          userAgentPackageName: 'open_transit.open_transit_app',
+          maxZoom: 18,
+          reset: _tileLayerResetController.stream,
+          // Custom headers are disallowed due to an issue with CORS in Firefox
+        )..tileProvider.headers.remove('User-Agent'),
+      ],
     );
   }
 }

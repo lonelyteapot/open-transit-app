@@ -1,9 +1,18 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_transit_app/map_widget.dart';
 import 'package:open_transit_app/settings.dart';
 import 'package:open_transit_app/utils.dart';
+import 'package:url_launcher/link.dart';
+
+Uri? _getApkDownloadUri() {
+  if (!kIsWeb) {
+    return null;
+  }
+  return getBaseUrl()?.resolve('open-transit-app.apk');
+}
 
 class MainScreen extends ConsumerWidget {
   const MainScreen({
@@ -29,9 +38,18 @@ class MainScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const ListTile(
-                title: Text('Open Transit'),
-              ),
+              if (_getApkDownloadUri() != null)
+                Link(
+                  uri: _getApkDownloadUri(),
+                  target: LinkTarget.blank,
+                  builder: (context, followLink) {
+                    return ListTile(
+                      title: const Text('Download APK'),
+                      leading: const Icon(Icons.system_update),
+                      onTap: followLink,
+                    );
+                  },
+                ),
               const Spacer(),
               SwitchListTile(
                 title: const Text('Debug info'),

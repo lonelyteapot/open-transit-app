@@ -99,7 +99,8 @@ class _AndroidAppDownloadLink extends StatelessWidget {
   final Uri? url;
 
   Widget? _buildSubtitle() {
-    if (defaultTargetPlatform == TargetPlatform.android && !kIsWeb) {
+    assert(kIsWeb);
+    if (defaultTargetPlatform == TargetPlatform.android) {
       return const Text('for smoother experience');
     }
     return const Text('to monitor on the go');

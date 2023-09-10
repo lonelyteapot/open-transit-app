@@ -43,24 +43,28 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
     super.dispose();
   }
 
-  void resetTileLayer() {
-    _tileLayerResetController.add(null);
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final isDarkMode = Theme.of(context).isDark;
+    if (wasDarkMode != isDarkMode) {
+      if (wasDarkMode != null) {
+        resetTileLayer();
+      }
+      wasDarkMode = isDarkMode;
+    }
   }
 
-  void observeDarkMode(final bool isDarkMode) {
-    if (wasDarkMode == null) {
-      wasDarkMode = isDarkMode;
-      return;
-    }
-    if (wasDarkMode != isDarkMode) {
-      resetTileLayer();
-      wasDarkMode = isDarkMode;
-    }
+  void resetTileLayer() {
+    _tileLayerResetController.add(null);
+    // Prevents instability
+    Future.delayed(Duration.zero, () {
+      setState(() {});
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    observeDarkMode(Theme.of(context).isDark);
     return FlutterMap(
       options: MapOptions(
         initialCenter: const LatLng(56.32867, 44.00205),

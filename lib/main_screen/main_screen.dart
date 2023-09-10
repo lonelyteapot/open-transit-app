@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:open_transit_app/map_widget.dart';
+import 'package:open_transit_app/main_screen/map_widget.dart';
 import 'package:open_transit_app/settings.dart';
 import 'package:open_transit_app/utils.dart';
 import 'package:open_transit_app/web_utils/web_utils.dart';

@@ -26,7 +26,7 @@ class MainApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
-      title: 'Open Transit',
+      title: 'Open Transit (Dev)',
       debugShowCheckedModeBanner: false,
       themeMode: ref.watch(settingsProvider).themeMode,
       theme: ThemeData(

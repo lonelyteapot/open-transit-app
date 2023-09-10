@@ -11,15 +11,10 @@ import 'package:open_transit_app/utils.dart';
 
 const String _mapboxLightStyleId = 'cllhswcs9018i01qs99zdd7n6';
 const String _mapboxDarkStyleId = 'clmb10kfe01ac01pfdic1deec';
+const String _mapboxAccessToken = String.fromEnvironment('MAPBOX_ACCESS_TOKEN');
 
 String _buildMapboxUrl({required String styleId, required String accessToken}) {
   return 'https://api.mapbox.com/styles/v1/lonelyteapot/$styleId/tiles/256/{z}/{x}/{y}@2x?access_token=$accessToken';
-}
-
-String _getMapboxAccessToken() {
-  const mapboxAccessToken = String.fromEnvironment('MAPBOX_ACCESS_TOKEN');
-  assert(mapboxAccessToken.isNotEmpty);
-  return mapboxAccessToken;
 }
 
 class CustomMapWidget extends ConsumerStatefulWidget {
@@ -36,6 +31,7 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
 
   @override
   void initState() {
+    assert(_mapboxAccessToken.isNotEmpty);
     super.initState();
     _mapController = MapController();
     _tileLayerResetController = StreamController();
@@ -82,7 +78,10 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
       nonRotatedChildren: [
         // TODO: Add attributions
         // https://docs.mapbox.com/help/getting-started/attribution/
-        if (ref.watch(settingsProvider).showDebugInfo) _buildDebugInfo(),
+        if (ref.watch(settingsProvider).showDebugInfo)
+          SafeArea(
+            child: _buildDebugInfo(),
+          ),
       ],
       children: [
         TileLayer(
@@ -91,7 +90,7 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
             styleId: Theme.of(context).isDark
                 ? _mapboxDarkStyleId
                 : _mapboxLightStyleId,
-            accessToken: _getMapboxAccessToken(),
+            accessToken: _mapboxAccessToken,
           ),
           userAgentPackageName: 'open_transit.open_transit_app',
           maxZoom: 18,

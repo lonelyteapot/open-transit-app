@@ -5,27 +5,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_transit_app/map_widget.dart';
 import 'package:open_transit_app/settings.dart';
 import 'package:open_transit_app/utils.dart';
+import 'package:open_transit_app/web_utils/web_utils.dart';
 import 'package:url_launcher/link.dart';
 
-Uri? _getApkDownloadUri() {
-  if (!kIsWeb) {
-    return null;
-  }
-  return getBaseUrl()?.resolve('open-transit-app.apk');
-}
+final _apkDownloadUrl =
+    WebUtils.instance?.getBaseUrl()?.resolve('open-transit-app.apk');
 
 class MainScreen extends ConsumerWidget {
   const MainScreen({
     super.key,
   });
 
+  bool _shouldShowAndroidAppDownloadLink() {
+    return _apkDownloadUrl != null &&
+        defaultTargetPlatform != TargetPlatform.iOS;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        forceMaterialTransparency: true,
         centerTitle: true,
+        forceMaterialTransparency: true,
+        backgroundColor: Colors.transparent,
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness:
@@ -33,23 +36,14 @@ class MainScreen extends ConsumerWidget {
         ),
       ),
       drawerEnableOpenDragGesture: false,
+      drawerScrimColor: Colors.black38,
       drawer: Drawer(
         child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (_getApkDownloadUri() != null)
-                Link(
-                  uri: _getApkDownloadUri(),
-                  target: LinkTarget.blank,
-                  builder: (context, followLink) {
-                    return ListTile(
-                      title: const Text('Download APK'),
-                      leading: const Icon(Icons.system_update),
-                      onTap: followLink,
-                    );
-                  },
-                ),
+              if (_shouldShowAndroidAppDownloadLink())
+                _AndroidAppDownloadLink(url: _apkDownloadUrl),
               const Spacer(),
               SwitchListTile(
                 title: const Text('Debug info'),
@@ -93,6 +87,37 @@ class MainScreen extends ConsumerWidget {
         ),
       ),
       body: const CustomMapWidget(),
+    );
+  }
+}
+
+class _AndroidAppDownloadLink extends StatelessWidget {
+  const _AndroidAppDownloadLink({
+    required this.url,
+  });
+
+  final Uri? url;
+
+  Widget? _buildSubtitle() {
+    if (defaultTargetPlatform == TargetPlatform.android && !kIsWeb) {
+      return const Text('for smoother experience');
+    }
+    return const Text('to monitor on the go');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Link(
+      uri: url,
+      target: LinkTarget.self,
+      builder: (context, followLink) {
+        return ListTile(
+          title: const Text('Download Android app'),
+          subtitle: _buildSubtitle(),
+          leading: const Icon(Icons.system_update),
+          onTap: followLink,
+        );
+      },
     );
   }
 }

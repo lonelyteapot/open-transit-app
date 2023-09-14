@@ -46,7 +46,7 @@ packages:
     description:
       path: dio
       ref: patch-1
-      resolved-ref: "69d784abd268f26b8d0ab89c6b0a2832fa6b3c93"
+      resolved-ref: a35dfc349b712b71e4425d37f18f23fed6288397
       url: "https://github.com/lonelyteapot/dio.git"
     source: git
     version: "5.3.2"
@@ -91,9 +91,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: patch-1
-      resolved-ref: fb7ece9efe20b0658390d1720edca0c374dc7966
-      url: "https://github.com/lonelyteapot/flutter_map.git"
+      ref: d35d672757ddc9669f99a5c1cd370749e927198d
+      resolved-ref: d35d672757ddc9669f99a5c1cd370749e927198d
+      url: "https://github.com/fleaflet/flutter_map.git"
     source: git
     version: "6.0.0-dev.2"
   flutter_map_cancellable_tile_provider:

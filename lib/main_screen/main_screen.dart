@@ -6,6 +6,7 @@ import 'package:open_transit_app/main_screen/map_widget.dart';
 import 'package:open_transit_app/settings.dart';
 import 'package:open_transit_app/utils.dart';
 import 'package:open_transit_app/web_utils/web_utils.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:url_launcher/link.dart';
 
 final _apkDownloadUrl =
@@ -86,7 +87,37 @@ class MainScreen extends ConsumerWidget {
           ),
         ),
       ),
-      body: const CustomMapWidget(),
+      body: Builder(
+        builder: (context) {
+          return SlidingUpPanel(
+            minHeight: 160,
+            maxHeight: MediaQuery.sizeOf(context).height -
+                MediaQuery.paddingOf(context).top,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(24),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+                blurRadius: 8,
+              ),
+            ],
+            backdropEnabled: true,
+            backdropOpacity: 0,
+            color: Theme.of(context).colorScheme.background,
+            panel: MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: const SafeArea(
+                child: Center(
+                  child: FlutterLogo(),
+                ),
+              ),
+            ),
+            body: const CustomMapWidget(),
+          );
+        },
+      ),
     );
   }
 }

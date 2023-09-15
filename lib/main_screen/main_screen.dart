@@ -17,11 +17,6 @@ class MainScreen extends ConsumerWidget {
     super.key,
   });
 
-  bool _shouldShowAndroidAppDownloadLink() {
-    return _apkDownloadUrl != null &&
-        defaultTargetPlatform != TargetPlatform.iOS;
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -38,53 +33,9 @@ class MainScreen extends ConsumerWidget {
       ),
       drawerEnableOpenDragGesture: false,
       drawerScrimColor: Colors.black38,
-      drawer: Drawer(
+      drawer: const Drawer(
         child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (_shouldShowAndroidAppDownloadLink())
-                _AndroidAppDownloadLink(url: _apkDownloadUrl),
-              const Spacer(),
-              SwitchListTile(
-                title: const Text('Debug info'),
-                value: ref.watch(settingsProvider).showDebugInfo,
-                onChanged: (value) {
-                  ref.read(settingsProvider.notifier).setShowDebugInfo(value);
-                },
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 4),
-                child: Center(child: Text('Theme')),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16).copyWith(top: 0),
-                child: SegmentedButton<ThemeMode>(
-                  showSelectedIcon: false,
-                  selected: {ref.watch(settingsProvider).themeMode},
-                  onSelectionChanged: (value) {
-                    ref
-                        .read(settingsProvider.notifier)
-                        .setThemeMode(value.single);
-                  },
-                  segments: const [
-                    ButtonSegment(
-                      value: ThemeMode.light,
-                      label: Text('Light'),
-                    ),
-                    ButtonSegment(
-                      value: ThemeMode.system,
-                      label: Text('Auto'),
-                    ),
-                    ButtonSegment(
-                      value: ThemeMode.dark,
-                      label: Text('Dark'),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
+          child: _DrawerContent(),
         ),
       ),
       body: Builder(
@@ -104,18 +55,16 @@ class MainScreen extends ConsumerWidget {
             ],
             backdropEnabled: true,
             backdropOpacity: 0,
-            color: Theme.of(context).colorScheme.background,
+            color: Theme.of(context).colorScheme.surface,
             panel: MediaQuery.removePadding(
               context: context,
               removeTop: true,
               child: const SafeArea(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     _DragHandle(),
-                    ListTile(
-                      leading: FlutterLogo(),
-                      title: Text('Open Transit App'),
-                    ),
+                    _PanelContent(),
                   ],
                 ),
               ),
@@ -123,6 +72,137 @@ class MainScreen extends ConsumerWidget {
             body: const CustomMapWidget(),
           );
         },
+      ),
+    );
+  }
+}
+
+class _DrawerContent extends ConsumerWidget {
+  const _DrawerContent();
+
+  bool _shouldShowAndroidAppDownloadLink() {
+    return _apkDownloadUrl != null &&
+        defaultTargetPlatform != TargetPlatform.iOS;
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (_shouldShowAndroidAppDownloadLink())
+          _AndroidAppDownloadLink(url: _apkDownloadUrl),
+        const Spacer(),
+        SwitchListTile(
+          title: const Text('Debug info'),
+          value: ref.watch(settingsProvider).showDebugInfo,
+          onChanged: (value) {
+            ref.read(settingsProvider.notifier).setShowDebugInfo(value);
+          },
+        ),
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 4),
+          child: Center(child: Text('Theme')),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16).copyWith(top: 0),
+          child: SegmentedButton<ThemeMode>(
+            showSelectedIcon: false,
+            selected: {ref.watch(settingsProvider).themeMode},
+            onSelectionChanged: (value) {
+              ref.read(settingsProvider.notifier).setThemeMode(value.single);
+            },
+            segments: const [
+              ButtonSegment(
+                value: ThemeMode.light,
+                label: Text('Light'),
+              ),
+              ButtonSegment(
+                value: ThemeMode.system,
+                label: Text('Auto'),
+              ),
+              ButtonSegment(
+                value: ThemeMode.dark,
+                label: Text('Dark'),
+              )
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+MaterialStateProperty<OutlinedBorder?> _createRoundedCornerShape({
+  required double base,
+  double? topLeft,
+  double? topRight,
+  double? bottomLeft,
+  double? bottomRight,
+}) {
+  return MaterialStateProperty.all<OutlinedBorder>(
+    RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(base)).copyWith(
+        topLeft: topLeft != null ? Radius.circular(topLeft) : null,
+        topRight: topRight != null ? Radius.circular(topRight) : null,
+        bottomLeft: bottomLeft != null ? Radius.circular(bottomLeft) : null,
+        bottomRight: bottomRight != null ? Radius.circular(bottomRight) : null,
+      ),
+    ),
+  );
+}
+
+class _PanelContent extends StatelessWidget {
+  const _PanelContent();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: FilledButtonTheme(
+        data: FilledButtonThemeData(
+          style: ButtonStyle(
+            shape: MaterialStateProperty.all<OutlinedBorder>(
+              const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              ),
+            ),
+          ),
+        ),
+        child: Builder(builder: (context) {
+          return GridView.count(
+            primary: false,
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            crossAxisCount: 3,
+            mainAxisSpacing: 8.0,
+            crossAxisSpacing: 8.0,
+            childAspectRatio: 2.5,
+            clipBehavior: Clip.none,
+            children: [
+              FilledButton.tonal(
+                onPressed: () {},
+                style: FilledButtonTheme.of(context).style!.copyWith(
+                      shape:
+                          _createRoundedCornerShape(base: 8.0, topLeft: 16.0),
+                    ),
+                child: const Text('Routes'),
+              ),
+              FilledButton.tonal(
+                onPressed: () {},
+                child: const Text('Stops'),
+              ),
+              FilledButton.tonal(
+                onPressed: () {},
+                style: FilledButtonTheme.of(context).style!.copyWith(
+                      shape:
+                          _createRoundedCornerShape(base: 8.0, topRight: 16.0),
+                    ),
+                child: const Text('Stub'),
+              ),
+            ],
+          );
+        }),
       ),
     );
   }
@@ -170,7 +250,7 @@ class _DragHandle extends StatelessWidget {
       label: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       container: true,
       child: SizedBox(
-        height: 28,
+        height: 16,
         width: kMinInteractiveDimension,
         child: Center(
           child: Container(

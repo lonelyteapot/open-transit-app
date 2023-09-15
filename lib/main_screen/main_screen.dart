@@ -94,7 +94,7 @@ class MainScreen extends ConsumerWidget {
             maxHeight: MediaQuery.sizeOf(context).height -
                 MediaQuery.paddingOf(context).top,
             borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(24),
+              top: Radius.circular(28.0),
             ),
             boxShadow: [
               BoxShadow(
@@ -109,8 +109,14 @@ class MainScreen extends ConsumerWidget {
               context: context,
               removeTop: true,
               child: const SafeArea(
-                child: Center(
-                  child: FlutterLogo(),
+                child: Column(
+                  children: [
+                    _DragHandle(),
+                    ListTile(
+                      leading: FlutterLogo(),
+                      title: Text('Open Transit App'),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -150,6 +156,36 @@ class _AndroidAppDownloadLink extends StatelessWidget {
           onTap: followLink,
         );
       },
+    );
+  }
+}
+
+class _DragHandle extends StatelessWidget {
+  const _DragHandle();
+
+  @override
+  Widget build(BuildContext context) {
+    const Size size = Size(32, 4);
+    return Semantics(
+      label: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      container: true,
+      child: SizedBox(
+        height: 28,
+        width: kMinInteractiveDimension,
+        child: Center(
+          child: Container(
+            height: size.height,
+            width: size.width,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(size.height / 2),
+              color: Theme.of(context)
+                  .colorScheme
+                  .onSurfaceVariant
+                  .withOpacity(0.4),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

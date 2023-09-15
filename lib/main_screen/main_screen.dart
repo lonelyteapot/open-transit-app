@@ -169,40 +169,66 @@ class _PanelContent extends StatelessWidget {
             ),
           ),
         ),
-        child: Builder(builder: (context) {
-          return GridView.count(
-            primary: false,
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            crossAxisCount: 3,
-            mainAxisSpacing: 8.0,
-            crossAxisSpacing: 8.0,
-            childAspectRatio: 2.5,
-            clipBehavior: Clip.none,
-            children: [
-              FilledButton.tonal(
-                onPressed: () {},
-                style: FilledButtonTheme.of(context).style!.copyWith(
-                      shape:
-                          _createRoundedCornerShape(base: 8.0, topLeft: 16.0),
+        child: Builder(
+          builder: (context) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                GridView.count(
+                  primary: false,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 8.0,
+                  crossAxisSpacing: 8.0,
+                  childAspectRatio: 2.5,
+                  clipBehavior: Clip.none,
+                  children: [
+                    FilledButton.tonal(
+                      onPressed: () {},
+                      style: FilledButtonTheme.of(context).style!.copyWith(
+                            shape: _createRoundedCornerShape(
+                                base: 8.0, topLeft: 16.0),
+                          ),
+                      child: const Text('Routes'),
                     ),
-                child: const Text('Routes'),
-              ),
-              FilledButton.tonal(
-                onPressed: () {},
-                child: const Text('Stops'),
-              ),
-              FilledButton.tonal(
-                onPressed: () {},
-                style: FilledButtonTheme.of(context).style!.copyWith(
-                      shape:
-                          _createRoundedCornerShape(base: 8.0, topRight: 16.0),
+                    FilledButton.tonal(
+                      onPressed: () {},
+                      child: const Text('Stops'),
                     ),
-                child: const Text('Stub'),
-              ),
-            ],
-          );
-        }),
+                    FilledButton.tonal(
+                      onPressed: () {},
+                      style: FilledButtonTheme.of(context).style!.copyWith(
+                            shape: _createRoundedCornerShape(
+                                base: 8.0, topRight: 16.0),
+                          ),
+                      child: const Text('Stub'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8.0),
+                DropdownMenu<int>(
+                  leadingIcon: const Icon(Icons.location_city),
+                  label: const Text('Location'),
+                  inputDecorationTheme: const InputDecorationTheme(
+                    filled: true,
+                    // floatingLabelBehavior: FloatingLabelBehavior.never,
+                    contentPadding: EdgeInsets.symmetric(vertical: 5.0),
+                    border: UnderlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    ),
+                  ),
+                  width: MediaQuery.sizeOf(context).width - 32,
+                  dropdownMenuEntries: const [
+                    DropdownMenuEntry(value: 0, label: 'Location 1'),
+                    DropdownMenuEntry(value: 1, label: 'Location 2'),
+                    DropdownMenuEntry(value: 2, label: 'Location 3'),
+                  ],
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

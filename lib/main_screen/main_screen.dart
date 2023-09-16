@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_transit_app/main_screen/map_widget.dart';
 import 'package:open_transit_app/settings.dart';
+import 'package:open_transit_app/transit_networks/networks.dart';
+import 'package:open_transit_app/transit_networks/selected_network.dart';
 import 'package:open_transit_app/utils.dart';
 import 'package:open_transit_app/web_utils/web_utils.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -171,64 +173,91 @@ class _PanelContent extends StatelessWidget {
         ),
         child: Builder(
           builder: (context) {
-            return Column(
+            return const Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                GridView.count(
-                  primary: false,
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  crossAxisCount: 3,
-                  mainAxisSpacing: 8.0,
-                  crossAxisSpacing: 8.0,
-                  childAspectRatio: 2.5,
-                  clipBehavior: Clip.none,
-                  children: [
-                    FilledButton.tonal(
-                      onPressed: () {},
-                      style: FilledButtonTheme.of(context).style!.copyWith(
-                            shape: _createRoundedCornerShape(
-                                base: 8.0, topLeft: 16.0),
-                          ),
-                      child: const Text('Routes'),
-                    ),
-                    FilledButton.tonal(
-                      onPressed: () {},
-                      child: const Text('Stops'),
-                    ),
-                    FilledButton.tonal(
-                      onPressed: () {},
-                      style: FilledButtonTheme.of(context).style!.copyWith(
-                            shape: _createRoundedCornerShape(
-                                base: 8.0, topRight: 16.0),
-                          ),
-                      child: const Text('Stub'),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8.0),
-                DropdownMenu<int>(
-                  leadingIcon: const Icon(Icons.location_city),
-                  label: const Text('Location'),
-                  inputDecorationTheme: const InputDecorationTheme(
-                    filled: true,
-                    // floatingLabelBehavior: FloatingLabelBehavior.never,
-                    contentPadding: EdgeInsets.symmetric(vertical: 5.0),
-                    border: UnderlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                    ),
-                  ),
-                  width: MediaQuery.sizeOf(context).width - 32,
-                  dropdownMenuEntries: const [
-                    DropdownMenuEntry(value: 0, label: 'Location 1'),
-                    DropdownMenuEntry(value: 1, label: 'Location 2'),
-                    DropdownMenuEntry(value: 2, label: 'Location 3'),
-                  ],
-                ),
+                TopButtons(),
+                SizedBox(height: 8.0),
+                NetworkSelector(),
               ],
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class TopButtons extends StatelessWidget {
+  const TopButtons({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.count(
+      primary: false,
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      crossAxisCount: 3,
+      mainAxisSpacing: 8.0,
+      crossAxisSpacing: 8.0,
+      childAspectRatio: 2.5,
+      clipBehavior: Clip.none,
+      children: [
+        FilledButton.tonal(
+          onPressed: () {},
+          style: FilledButtonTheme.of(context).style!.copyWith(
+                shape: _createRoundedCornerShape(base: 8.0, topLeft: 16.0),
+              ),
+          child: const Text('Routes'),
+        ),
+        FilledButton.tonal(
+          onPressed: () {},
+          child: const Text('Stops'),
+        ),
+        FilledButton.tonal(
+          onPressed: () {},
+          style: FilledButtonTheme.of(context).style!.copyWith(
+                shape: _createRoundedCornerShape(base: 8.0, topRight: 16.0),
+              ),
+          child: const Text('Stub'),
+        ),
+      ],
+    );
+  }
+}
+
+class NetworkSelector extends ConsumerWidget {
+  const NetworkSelector({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final asyncNetworks = ref.watch(transitNetworksProvider);
+    final asyncSelectedNetwork = ref.watch(selectedNetworkProvider);
+    return DropdownMenu<TransitNetwork>(
+      leadingIcon: const Icon(Icons.location_city),
+      label: const Text('Location'),
+      inputDecorationTheme: const InputDecorationTheme(
+        filled: true,
+        contentPadding: EdgeInsets.symmetric(vertical: 5.0),
+        border: UnderlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+        ),
+      ),
+      width: MediaQuery.sizeOf(context).width - 32,
+      initialSelection: asyncSelectedNetwork.valueOrNull,
+      onSelected: (value) {
+        ref.read(selectedNetworkProvider.notifier).select(value);
+      },
+      dropdownMenuEntries: asyncNetworks.maybeWhen(
+        data: (data) => data.map((network) {
+          return DropdownMenuEntry<TransitNetwork>(
+            value: network,
+            label: network.name,
+          );
+        }).toList(),
+        orElse: List.empty,
       ),
     );
   }

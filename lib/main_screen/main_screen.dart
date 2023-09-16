@@ -13,62 +13,107 @@ class MainScreen extends ConsumerWidget {
     super.key,
   });
 
+  static final mapKey = GlobalKey(debugLabel: 'mainCustomMap');
+
+  final double sidebarWidth = 400.0;
+
+  Widget _buildPortrait(context) {
+    return SlidingUpPanel(
+      minHeight: 160,
+      maxHeight:
+          MediaQuery.sizeOf(context).height - MediaQuery.paddingOf(context).top,
+      borderRadius: const BorderRadius.vertical(
+        top: Radius.circular(28.0),
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+          blurRadius: 8,
+        ),
+      ],
+      backdropEnabled: true,
+      backdropOpacity: 0,
+      color: Theme.of(context).colorScheme.surface,
+      panel: MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        child: const SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _DragHandle(),
+              _PanelContent(),
+            ],
+          ),
+        ),
+      ),
+      body: CustomMapWidget(key: mapKey),
+    );
+  }
+
+  Widget _buildLandscape(context) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Positioned(
+          top: 0,
+          bottom: 0,
+          left: sidebarWidth,
+          right: 0,
+          child: CustomMapWidget(key: mapKey),
+        ),
+        Positioned(
+          top: 0,
+          bottom: 0,
+          left: 0,
+          width: sidebarWidth,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+                  blurRadius: 8,
+                ),
+              ],
+            ),
+            child: const _PanelContent(),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        centerTitle: true,
-        forceMaterialTransparency: true,
-        backgroundColor: Colors.transparent,
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness:
-              Theme.of(context).isDark ? Brightness.light : Brightness.dark,
-        ),
-      ),
-      drawerEnableOpenDragGesture: false,
-      drawerScrimColor: Colors.black38,
-      drawer: const Drawer(
-        child: SafeArea(
-          child: DrawerContent(),
-        ),
-      ),
-      body: Builder(
-        builder: (context) {
-          return SlidingUpPanel(
-            minHeight: 160,
-            maxHeight: MediaQuery.sizeOf(context).height -
-                MediaQuery.paddingOf(context).top,
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(28.0),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isLandscape =
+            (constraints.maxWidth + sidebarWidth > constraints.maxHeight);
+        return Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            centerTitle: isLandscape ? false : true,
+            forceMaterialTransparency: true,
+            backgroundColor: Colors.transparent,
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              statusBarIconBrightness:
+                  Theme.of(context).isDark ? Brightness.light : Brightness.dark,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
-                blurRadius: 8,
-              ),
-            ],
-            backdropEnabled: true,
-            backdropOpacity: 0,
-            color: Theme.of(context).colorScheme.surface,
-            panel: MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: const SafeArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _DragHandle(),
-                    _PanelContent(),
-                  ],
-                ),
-              ),
+          ),
+          drawerEnableOpenDragGesture: false,
+          drawerScrimColor: Colors.black38,
+          drawer: const Drawer(
+            child: SafeArea(
+              child: DrawerContent(),
             ),
-            body: const CustomMapWidget(),
-          );
-        },
-      ),
+          ),
+          body: Builder(
+            builder: isLandscape ? _buildLandscape : _buildPortrait,
+          ),
+        );
+      },
     );
   }
 }
@@ -164,35 +209,39 @@ class NetworkSelector extends ConsumerWidget {
         style: TextStyle(color: Theme.of(context).disabledColor),
       ),
     );
-    return DropdownMenu<TransitNetwork?>(
-      enabled: asyncNetworks.hasValue,
-      label: const Text('Location'),
-      leadingIcon: const Icon(Icons.location_city),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: Theme.of(context).colorScheme.secondaryContainer,
-        contentPadding: const EdgeInsets.symmetric(vertical: 5.0),
-        border: const UnderlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-        ),
-      ),
-      width: MediaQuery.sizeOf(context).width - 32,
-      menuHeight: 615,
-      initialSelection: asyncSelectedNetwork.valueOrNull,
-      onSelected: (value) {
-        ref.read(selectedNetworkProvider.notifier).select(value);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return DropdownMenu<TransitNetwork?>(
+          enabled: asyncNetworks.hasValue,
+          label: const Text('Location'),
+          leadingIcon: const Icon(Icons.location_city),
+          inputDecorationTheme: InputDecorationTheme(
+            filled: true,
+            fillColor: Theme.of(context).colorScheme.secondaryContainer,
+            contentPadding: const EdgeInsets.symmetric(vertical: 5.0),
+            border: const UnderlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+            ),
+          ),
+          width: constraints.maxWidth,
+          menuHeight: 615,
+          initialSelection: asyncSelectedNetwork.valueOrNull,
+          onSelected: (value) {
+            ref.read(selectedNetworkProvider.notifier).select(value);
+          },
+          dropdownMenuEntries: asyncNetworks.maybeWhen(
+            data: (data) => [deselectingEntry].followedBy(
+              data.map((network) {
+                return DropdownMenuEntry<TransitNetwork>(
+                  value: network,
+                  label: network.name,
+                );
+              }),
+            ).toList(),
+            orElse: List.empty,
+          ),
+        );
       },
-      dropdownMenuEntries: asyncNetworks.maybeWhen(
-        data: (data) => [deselectingEntry].followedBy(
-          data.map((network) {
-            return DropdownMenuEntry<TransitNetwork>(
-              value: network,
-              label: network.name,
-            );
-          }),
-        ).toList(),
-        orElse: List.empty,
-      ),
     );
   }
 }

@@ -1,18 +1,12 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:open_transit_app/main_screen/drawer.dart';
 import 'package:open_transit_app/main_screen/map_widget.dart';
-import 'package:open_transit_app/settings.dart';
 import 'package:open_transit_app/transit_networks/networks.dart';
 import 'package:open_transit_app/transit_networks/selected_network.dart';
 import 'package:open_transit_app/utils.dart';
-import 'package:open_transit_app/web_utils/web_utils.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:url_launcher/link.dart';
-
-final _apkDownloadUrl =
-    WebUtils.instance?.getBaseUrl()?.resolve('open-transit-app.apk');
 
 class MainScreen extends ConsumerWidget {
   const MainScreen({
@@ -37,7 +31,7 @@ class MainScreen extends ConsumerWidget {
       drawerScrimColor: Colors.black38,
       drawer: const Drawer(
         child: SafeArea(
-          child: _DrawerContent(),
+          child: DrawerContent(),
         ),
       ),
       body: Builder(
@@ -77,81 +71,6 @@ class MainScreen extends ConsumerWidget {
       ),
     );
   }
-}
-
-class _DrawerContent extends ConsumerWidget {
-  const _DrawerContent();
-
-  bool _shouldShowAndroidAppDownloadLink() {
-    return _apkDownloadUrl != null &&
-        defaultTargetPlatform != TargetPlatform.iOS;
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (_shouldShowAndroidAppDownloadLink())
-          _AndroidAppDownloadLink(url: _apkDownloadUrl),
-        const Spacer(),
-        SwitchListTile(
-          title: const Text('Debug info'),
-          value: ref.watch(settingsProvider).showDebugInfo,
-          onChanged: (value) {
-            ref.read(settingsProvider.notifier).setShowDebugInfo(value);
-          },
-        ),
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 4),
-          child: Center(child: Text('Theme')),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(16).copyWith(top: 0),
-          child: SegmentedButton<ThemeMode>(
-            showSelectedIcon: false,
-            selected: {ref.watch(settingsProvider).themeMode},
-            onSelectionChanged: (value) {
-              ref.read(settingsProvider.notifier).setThemeMode(value.single);
-            },
-            segments: const [
-              ButtonSegment(
-                value: ThemeMode.light,
-                label: Text('Light'),
-              ),
-              ButtonSegment(
-                value: ThemeMode.system,
-                label: Text('Auto'),
-              ),
-              ButtonSegment(
-                value: ThemeMode.dark,
-                label: Text('Dark'),
-              )
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-MaterialStateProperty<OutlinedBorder?> _createRoundedCornerShape({
-  required double base,
-  double? topLeft,
-  double? topRight,
-  double? bottomLeft,
-  double? bottomRight,
-}) {
-  return MaterialStateProperty.all<OutlinedBorder>(
-    RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(base)).copyWith(
-        topLeft: topLeft != null ? Radius.circular(topLeft) : null,
-        topRight: topRight != null ? Radius.circular(topRight) : null,
-        bottomLeft: bottomLeft != null ? Radius.circular(bottomLeft) : null,
-        bottomRight: bottomRight != null ? Radius.circular(bottomRight) : null,
-      ),
-    ),
-  );
 }
 
 class _PanelContent extends StatelessWidget {
@@ -263,38 +182,6 @@ class NetworkSelector extends ConsumerWidget {
   }
 }
 
-class _AndroidAppDownloadLink extends StatelessWidget {
-  const _AndroidAppDownloadLink({
-    required this.url,
-  });
-
-  final Uri? url;
-
-  Widget? _buildSubtitle() {
-    assert(kIsWeb);
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      return const Text('for smoother experience');
-    }
-    return const Text('to monitor on the go');
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Link(
-      uri: url,
-      target: LinkTarget.self,
-      builder: (context, followLink) {
-        return ListTile(
-          title: const Text('Download Android app'),
-          subtitle: _buildSubtitle(),
-          leading: const Icon(Icons.system_update),
-          onTap: followLink,
-        );
-      },
-    );
-  }
-}
-
 class _DragHandle extends StatelessWidget {
   const _DragHandle();
 
@@ -323,4 +210,23 @@ class _DragHandle extends StatelessWidget {
       ),
     );
   }
+}
+
+MaterialStateProperty<OutlinedBorder?> _createRoundedCornerShape({
+  required double base,
+  double? topLeft,
+  double? topRight,
+  double? bottomLeft,
+  double? bottomRight,
+}) {
+  return MaterialStateProperty.all<OutlinedBorder>(
+    RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(base)).copyWith(
+        topLeft: topLeft != null ? Radius.circular(topLeft) : null,
+        topRight: topRight != null ? Radius.circular(topRight) : null,
+        bottomLeft: bottomLeft != null ? Radius.circular(bottomLeft) : null,
+        bottomRight: bottomRight != null ? Radius.circular(bottomRight) : null,
+      ),
+    ),
+  );
 }

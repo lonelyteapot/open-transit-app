@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:open_transit_app/logging.dart';
 import 'package:open_transit_app/main_screen/main_screen.dart';
 import 'package:open_transit_app/settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
+  logger.d('Initializing Open Transit app');
+
   WidgetsFlutterBinding.ensureInitialized();
 
   // This holds up app loading, but neccessary not to flash color theme

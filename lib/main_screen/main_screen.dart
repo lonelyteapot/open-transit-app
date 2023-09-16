@@ -107,13 +107,15 @@ class _PanelContent extends StatelessWidget {
   }
 }
 
-class TopButtons extends StatelessWidget {
+class TopButtons extends ConsumerWidget {
   const TopButtons({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isNetworkSelected =
+        ref.watch(selectedNetworkProvider).valueOrNull != null;
     return GridView.count(
       primary: false,
       physics: const NeverScrollableScrollPhysics(),
@@ -125,18 +127,18 @@ class TopButtons extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         FilledButton.tonal(
-          onPressed: () {},
+          onPressed: !isNetworkSelected ? null : () {},
           style: FilledButtonTheme.of(context).style!.copyWith(
                 shape: _createRoundedCornerShape(base: 8.0, topLeft: 16.0),
               ),
           child: const Text('Routes'),
         ),
         FilledButton.tonal(
-          onPressed: () {},
+          onPressed: !isNetworkSelected ? null : () {},
           child: const Text('Stops'),
         ),
         FilledButton.tonal(
-          onPressed: () {},
+          onPressed: !isNetworkSelected ? null : () {},
           style: FilledButtonTheme.of(context).style!.copyWith(
                 shape: _createRoundedCornerShape(base: 8.0, topRight: 16.0),
               ),
@@ -154,28 +156,41 @@ class NetworkSelector extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncNetworks = ref.watch(transitNetworksProvider);
     final asyncSelectedNetwork = ref.watch(selectedNetworkProvider);
-    return DropdownMenu<TransitNetwork>(
-      leadingIcon: const Icon(Icons.location_city),
+    final deselectingEntry = DropdownMenuEntry<TransitNetwork?>(
+      value: null,
+      label: '',
+      leadingIcon: Text(
+        'None',
+        style: TextStyle(color: Theme.of(context).disabledColor),
+      ),
+    );
+    return DropdownMenu<TransitNetwork?>(
+      enabled: asyncNetworks.hasValue,
       label: const Text('Location'),
-      inputDecorationTheme: const InputDecorationTheme(
+      leadingIcon: const Icon(Icons.location_city),
+      inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        contentPadding: EdgeInsets.symmetric(vertical: 5.0),
-        border: UnderlineInputBorder(
+        fillColor: Theme.of(context).colorScheme.secondaryContainer,
+        contentPadding: const EdgeInsets.symmetric(vertical: 5.0),
+        border: const UnderlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(8.0)),
         ),
       ),
       width: MediaQuery.sizeOf(context).width - 32,
+      menuHeight: 615,
       initialSelection: asyncSelectedNetwork.valueOrNull,
       onSelected: (value) {
         ref.read(selectedNetworkProvider.notifier).select(value);
       },
       dropdownMenuEntries: asyncNetworks.maybeWhen(
-        data: (data) => data.map((network) {
-          return DropdownMenuEntry<TransitNetwork>(
-            value: network,
-            label: network.name,
-          );
-        }).toList(),
+        data: (data) => [deselectingEntry].followedBy(
+          data.map((network) {
+            return DropdownMenuEntry<TransitNetwork>(
+              value: network,
+              label: network.name,
+            );
+          }),
+        ).toList(),
         orElse: List.empty,
       ),
     );

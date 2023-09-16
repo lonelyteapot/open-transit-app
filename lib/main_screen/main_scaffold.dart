@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:open_transit_app/main_screen/drawer.dart';
 import 'package:open_transit_app/main_screen/map_widget.dart';
 import 'package:open_transit_app/utils.dart';
@@ -36,27 +37,34 @@ class MainScaffold extends ConsumerWidget {
       backdropEnabled: true,
       backdropOpacity: 0,
       color: Theme.of(context).colorScheme.surface,
-      panel: MediaQuery.removePadding(
-        context: context,
-        removeTop: true,
-        child: SafeArea(
-          child: Stack(
-            alignment: Alignment.topCenter,
-            fit: StackFit.expand,
-            clipBehavior: Clip.none,
-            children: [
-              ClipRRect(
-                borderRadius: borderRadius,
-                child: body,
-              ),
-              const Positioned(
-                top: 0,
-                child: _DragHandle(),
-              ),
-            ],
+      panelBuilder: (scrollController) {
+        return MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: SafeArea(
+            child: Stack(
+              alignment: Alignment.topCenter,
+              fit: StackFit.expand,
+              clipBehavior: Clip.none,
+              children: [
+                ClipRRect(
+                  borderRadius: borderRadius,
+                  child: PrimaryScrollControllerProvider(
+                    controller: scrollController,
+                    automaticallyInheritForPlatforms:
+                        TargetPlatform.values.toSet(),
+                    child: body,
+                  ),
+                ),
+                const Positioned(
+                  top: 0,
+                  child: _DragHandle(),
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
       body: CustomMapWidget(key: mapKey),
     );
   }
@@ -96,6 +104,9 @@ class MainScaffold extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final shouldShowBackButton =
+        GoRouter.of(context).routerDelegate.currentConfiguration.fullPath !=
+            '/';
     return LayoutBuilder(
       builder: (context, constraints) {
         final isLandscape =
@@ -111,10 +122,13 @@ class MainScaffold extends ConsumerWidget {
               statusBarIconBrightness:
                   Theme.of(context).isDark ? Brightness.light : Brightness.dark,
             ),
+            leading: shouldShowBackButton
+                ? BackButton(onPressed: context.pop)
+                : null,
           ),
-          drawerEnableOpenDragGesture: false,
           drawerScrimColor: Colors.black38,
-          drawer: const Drawer(
+          endDrawerEnableOpenDragGesture: false,
+          endDrawer: const Drawer(
             child: SafeArea(
               child: DrawerContent(),
             ),

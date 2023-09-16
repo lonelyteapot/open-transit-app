@@ -1,7 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_transit_app/logging.dart';
-import 'package:open_transit_app/main_screen/main_screen.dart';
+import 'package:open_transit_app/router.dart';
 import 'package:open_transit_app/settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,9 +29,9 @@ class MainApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp(
-      title: 'Open Transit (Dev)',
-      debugShowCheckedModeBanner: false,
+    return MaterialApp.router(
+      routerConfig: router,
+      title: 'Open Transit (${kDebugMode ? 'Debug' : 'Dev'})',
       themeMode: ref.watch(settingsProvider).themeMode,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -46,7 +47,7 @@ class MainApp extends ConsumerWidget {
         ),
         useMaterial3: true,
       ),
-      home: const MainScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

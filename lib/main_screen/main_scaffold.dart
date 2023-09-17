@@ -5,7 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:open_transit_app/main_screen/drawer.dart';
 import 'package:open_transit_app/main_screen/map_widget.dart';
 import 'package:open_transit_app/src/core/utils.dart';
+import 'package:provider/provider.dart' as provider;
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+
+const double sidebarWidth = 400;
 
 class MainScaffold extends ConsumerWidget {
   const MainScaffold({
@@ -15,92 +18,7 @@ class MainScaffold extends ConsumerWidget {
 
   static final mapKey = GlobalKey(debugLabel: 'mainCustomMap');
 
-  final double sidebarWidth = 400.0;
   final Widget body;
-
-  Widget _buildPortrait(context) {
-    final maxPanelHeight =
-        MediaQuery.sizeOf(context).height - MediaQuery.paddingOf(context).top;
-    const borderRadius = BorderRadius.vertical(
-      top: Radius.circular(28.0),
-    );
-    return SlidingUpPanel(
-      minHeight: 160,
-      maxHeight: maxPanelHeight,
-      borderRadius: borderRadius,
-      boxShadow: [
-        BoxShadow(
-          color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
-          blurRadius: 8,
-        ),
-      ],
-      backdropEnabled: true,
-      backdropOpacity: 0,
-      color: Theme.of(context).colorScheme.surface,
-      panelBuilder: (scrollController) {
-        return MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          child: SafeArea(
-            child: Stack(
-              alignment: Alignment.topCenter,
-              fit: StackFit.expand,
-              clipBehavior: Clip.none,
-              children: [
-                ClipRRect(
-                  borderRadius: borderRadius,
-                  child: PrimaryScrollControllerProvider(
-                    controller: scrollController,
-                    automaticallyInheritForPlatforms:
-                        TargetPlatform.values.toSet(),
-                    child: body,
-                  ),
-                ),
-                const Positioned(
-                  top: 0,
-                  child: _DragHandle(),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-      body: CustomMapWidget(key: mapKey),
-    );
-  }
-
-  Widget _buildLandscape(context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        Positioned(
-          top: 0,
-          bottom: 0,
-          left: sidebarWidth,
-          right: 0,
-          child: CustomMapWidget(key: mapKey),
-        ),
-        Positioned(
-          top: 0,
-          bottom: 0,
-          left: 0,
-          width: sidebarWidth,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              boxShadow: [
-                BoxShadow(
-                  color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
-                  blurRadius: 8,
-                ),
-              ],
-            ),
-            child: body,
-          ),
-        ),
-      ],
-    );
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -133,11 +51,162 @@ class MainScaffold extends ConsumerWidget {
               child: DrawerContent(),
             ),
           ),
-          body: Builder(
-            builder: isLandscape ? _buildLandscape : _buildPortrait,
+          body: isLandscape
+              ? _LandscapeLayout(mapKey: mapKey, child: body)
+              : _PortraitLayout(mapKey: mapKey, child: body),
+        );
+      },
+    );
+  }
+}
+
+class _PortraitLayout extends StatelessWidget {
+  const _PortraitLayout({
+    // ignore: unused_element
+    super.key,
+    required this.mapKey,
+    required this.child,
+  });
+
+  final Key mapKey;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final maxPanelHeight =
+        MediaQuery.sizeOf(context).height - MediaQuery.paddingOf(context).top;
+    const borderRadius = BorderRadius.vertical(
+      top: Radius.circular(28),
+    );
+    return SlidingUpPanel(
+      minHeight: 160,
+      maxHeight: maxPanelHeight,
+      borderRadius: borderRadius,
+      boxShadow: [
+        BoxShadow(
+          color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+          blurRadius: 8,
+        ),
+      ],
+      backdropEnabled: true,
+      backdropOpacity: 0,
+      color: Theme.of(context).colorScheme.surface,
+      panelBuilder: (scrollController) {
+        return MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: SafeArea(
+            child: Stack(
+              alignment: Alignment.topCenter,
+              fit: StackFit.expand,
+              clipBehavior: Clip.none,
+              children: [
+                ClipRRect(
+                  borderRadius: borderRadius,
+                  child: provider.InheritedProvider.value(
+                    value: scrollController,
+                    child: Theme(
+                      data: Theme.of(context).copyWith(
+                        pageTransitionsTheme: PageTransitionsTheme(
+                          builders: Map.fromIterable(
+                            TargetPlatform.values,
+                            value: (_) =>
+                                const FadeUpwardsPageTransitionsBuilder(),
+                          ),
+                        ),
+                      ),
+                      child: child,
+                    ),
+                  ),
+                ),
+                const Positioned(
+                  top: 0,
+                  child: _DragHandle(),
+                ),
+              ],
+            ),
           ),
         );
       },
+      body: CustomMapWidget(key: mapKey),
+    );
+  }
+}
+
+class _LandscapeLayout extends StatefulWidget {
+  const _LandscapeLayout({
+    // ignore: unused_element
+    super.key,
+    required this.mapKey,
+    required this.child,
+  });
+
+  final Key mapKey;
+  final Widget child;
+
+  @override
+  State<_LandscapeLayout> createState() => _LandscapeLayoutState();
+}
+
+class _LandscapeLayoutState extends State<_LandscapeLayout> {
+  late final ScrollController _mainScrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _mainScrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _mainScrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Positioned(
+          top: 0,
+          bottom: 0,
+          left: sidebarWidth,
+          right: 0,
+          child: CustomMapWidget(key: widget.mapKey),
+        ),
+        Positioned(
+          top: 0,
+          bottom: 0,
+          left: 0,
+          width: sidebarWidth,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+                  blurRadius: 8,
+                ),
+              ],
+            ),
+            child: provider.InheritedProvider.value(
+              value: _mainScrollController,
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  pageTransitionsTheme: PageTransitionsTheme(
+                    builders: Map.fromIterable(
+                      TargetPlatform.values,
+                      value: (_) => const CupertinoPageTransitionsBuilder(),
+                    ),
+                  ),
+                ),
+                child: widget.child,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -9,7 +9,11 @@ class MainView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.background,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+      ),
       padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
       child: FilledButtonTheme(
         data: FilledButtonThemeData(

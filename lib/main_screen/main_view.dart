@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:open_transit_app/src/transit_networks/networks.dart';
 import 'package:open_transit_app/src/transit_networks/selected_network.dart';
+import 'package:provider/provider.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class MainView extends StatelessWidget {
   const MainView({super.key});
@@ -65,6 +67,11 @@ class TopButtons extends ConsumerWidget {
           onPressed: !isNetworkSelected
               ? null
               : () {
+                  context.read<PanelController?>()?.animatePanelToPosition(
+                        1,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeOut,
+                      );
                   context.go('/routes');
                 },
           style: FilledButtonTheme.of(context).style!.copyWith(

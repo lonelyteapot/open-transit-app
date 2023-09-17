@@ -60,7 +60,7 @@ class MainScaffold extends ConsumerWidget {
   }
 }
 
-class _PortraitLayout extends StatelessWidget {
+class _PortraitLayout extends ConsumerStatefulWidget {
   const _PortraitLayout({
     // ignore: unused_element
     super.key,
@@ -72,63 +72,74 @@ class _PortraitLayout extends StatelessWidget {
   final Widget child;
 
   @override
+  ConsumerState<_PortraitLayout> createState() => _PortraitLayoutState();
+}
+
+class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
+  @override
   Widget build(BuildContext context) {
     final maxPanelHeight =
         MediaQuery.sizeOf(context).height - MediaQuery.paddingOf(context).top;
     const borderRadius = BorderRadius.vertical(
       top: Radius.circular(28),
     );
-    return SlidingUpPanel(
-      minHeight: 160,
-      maxHeight: maxPanelHeight,
-      borderRadius: borderRadius,
-      boxShadow: [
-        BoxShadow(
-          color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
-          blurRadius: 8,
-        ),
-      ],
-      backdropEnabled: true,
-      backdropOpacity: 0,
-      color: Theme.of(context).colorScheme.surface,
-      panelBuilder: (scrollController) {
-        return MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          child: SafeArea(
-            child: Stack(
-              alignment: Alignment.topCenter,
-              fit: StackFit.expand,
-              clipBehavior: Clip.none,
-              children: [
-                ClipRRect(
-                  borderRadius: borderRadius,
-                  child: provider.InheritedProvider.value(
-                    value: scrollController,
-                    child: Theme(
-                      data: Theme.of(context).copyWith(
-                        pageTransitionsTheme: PageTransitionsTheme(
-                          builders: Map.fromIterable(
-                            TargetPlatform.values,
-                            value: (_) =>
-                                const FadeUpwardsPageTransitionsBuilder(),
+    return provider.Provider<PanelController?>(
+      create: (_) => PanelController(),
+      child: Builder(builder: (context) {
+        return SlidingUpPanel(
+          minHeight: 160,
+          maxHeight: maxPanelHeight,
+          borderRadius: borderRadius,
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+              blurRadius: 8,
+            ),
+          ],
+          controller: context.watch<PanelController?>()!,
+          backdropEnabled: true,
+          backdropOpacity: 0,
+          color: Theme.of(context).colorScheme.surface,
+          panelBuilder: (scrollController) {
+            return MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: SafeArea(
+                child: Stack(
+                  alignment: Alignment.topCenter,
+                  fit: StackFit.expand,
+                  clipBehavior: Clip.none,
+                  children: [
+                    ClipRRect(
+                      borderRadius: borderRadius,
+                      child: provider.InheritedProvider.value(
+                        value: scrollController,
+                        child: Theme(
+                          data: Theme.of(context).copyWith(
+                            pageTransitionsTheme: PageTransitionsTheme(
+                              builders: Map.fromIterable(
+                                TargetPlatform.values,
+                                value: (_) =>
+                                    const FadeUpwardsPageTransitionsBuilder(),
+                              ),
+                            ),
                           ),
+                          child: widget.child,
                         ),
                       ),
-                      child: child,
                     ),
-                  ),
+                    const Positioned(
+                      top: 0,
+                      child: _DragHandle(),
+                    ),
+                  ],
                 ),
-                const Positioned(
-                  top: 0,
-                  child: _DragHandle(),
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
+          body: CustomMapWidget(key: widget.mapKey),
         );
-      },
-      body: CustomMapWidget(key: mapKey),
+      }),
     );
   }
 }

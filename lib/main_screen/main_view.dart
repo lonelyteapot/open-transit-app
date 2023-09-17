@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:open_transit_app/transit_networks/networks.dart';
-import 'package:open_transit_app/transit_networks/selected_network.dart';
+import 'package:open_transit_app/src/transit_networks/networks.dart';
+import 'package:open_transit_app/src/transit_networks/selected_network.dart';
 
 class MainView extends StatelessWidget {
   const MainView({super.key});

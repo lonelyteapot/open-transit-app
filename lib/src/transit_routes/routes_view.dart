@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:open_transit_app/utils.dart';
+import 'package:open_transit_app/src/core/utils.dart';
 
 class RoutesView extends StatelessWidget {
   const RoutesView({super.key});

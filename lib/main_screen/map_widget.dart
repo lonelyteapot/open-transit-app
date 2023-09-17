@@ -6,8 +6,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:open_transit_app/settings.dart';
-import 'package:open_transit_app/utils.dart';
+import 'package:open_transit_app/src/core/settings.dart';
+import 'package:open_transit_app/src/core/utils.dart';
 
 const String _mapboxLightStyleId = 'cllhswcs9018i01qs99zdd7n6';
 const String _mapboxDarkStyleId = 'clmb10kfe01ac01pfdic1deec';

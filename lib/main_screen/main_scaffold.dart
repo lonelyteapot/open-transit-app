@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:open_transit_app/main_screen/drawer.dart';
 import 'package:open_transit_app/main_screen/map_widget.dart';
-import 'package:open_transit_app/utils.dart';
+import 'package:open_transit_app/src/core/utils.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class MainScaffold extends ConsumerWidget {

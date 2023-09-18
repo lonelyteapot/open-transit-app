@@ -1,9 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_transit_app/src/core/logging.dart';
 import 'package:open_transit_app/src/core/router.dart';
 import 'package:open_transit_app/src/core/settings.dart';
+import 'package:open_transit_app/src/transit_routes/routes_cubit.dart';
+import 'package:open_transit_app/src/transit_routes/routes_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
@@ -15,11 +18,16 @@ Future<void> main() async {
   final sharedPreferences = await SharedPreferences.getInstance();
 
   runApp(
-    ProviderScope(
-      overrides: [
-        sharedPreferencesProvider.overrideWithValue(sharedPreferences)
-      ],
-      child: const MainApp(),
+    BlocProvider(
+      create: (_) => TransitRoutesCubit(
+        transitRoutesRepository: TransitRoutesRepository(),
+      )..loadRoutes(),
+      child: ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(sharedPreferences)
+        ],
+        child: const MainApp(),
+      ),
     ),
   );
 }

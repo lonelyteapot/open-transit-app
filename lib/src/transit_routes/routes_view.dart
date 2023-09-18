@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:provider/provider.dart';
+import 'package:open_transit_app/src/transit_routes/routes_cubit.dart';
 
 class RoutesView extends ConsumerWidget {
   const RoutesView({super.key});
@@ -15,13 +16,27 @@ class RoutesView extends ConsumerWidget {
       child: PrimaryScrollController(
         controller: context.watch<ScrollController>(),
         automaticallyInheritForPlatforms: TargetPlatform.values.toSet(),
-        child: ListView.builder(
-          itemCount: 30,
-          itemBuilder: (context, index) {
-            return ListTile(
-              leading: const Icon(Icons.route),
-              title: Text('Route ${index + 1}'),
-            );
+        child: BlocBuilder<TransitRoutesCubit, TransitRoutesState>(
+          builder: (context, transitRoutesState) {
+            switch (transitRoutesState) {
+              case TransitRoutesInitial():
+                return const SizedBox();
+              case TransitRoutesLoading():
+                return const Center(child: CircularProgressIndicator());
+              case TransitRoutesError(:final error):
+                return Center(child: Text('Error: $error'));
+              case TransitRoutesLoaded(:final routes):
+                return ListView.builder(
+                  itemCount: routes.length,
+                  itemBuilder: (context, index) {
+                    final route = routes[index];
+                    return ListTile(
+                      leading: const Icon(Icons.route),
+                      title: Text(route.name),
+                    );
+                  },
+                );
+            }
           },
         ),
       ),

@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import '../transit_networks/network_data.dart';
+import '../transit_networks/network.dart';
 import '../transit_networks/networks_notifier.dart';
 import '../transit_networks/selected_network_notifier.dart';
 

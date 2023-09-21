@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'settings_data.dart';
+import 'settings.dart';
 
 @immutable
 class SettingsRepository {

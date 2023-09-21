@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/providers.dart';
-import 'settings_data.dart';
+import 'settings.dart';
 import 'settings_repository.dart';
 
 class SettingsNotifier extends Notifier<SettingsData> {

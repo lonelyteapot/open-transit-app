@@ -1,1 +1,46 @@
+# This file configures the analyzer, which statically analyzes Dart code to
+# check for errors, warnings, and lints.
+#
+# The issues identified by the analyzer are surfaced in the UI of Dart-enabled
+# IDEs (https://dart.dev/tools#ides-and-editors). The analyzer can also be
+# invoked from the command line by running `flutter analyze`.
+
+# The following line activates a set of recommended lints for Flutter apps,
+# packages, and plugins designed to encourage good coding practices.
 include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  errors:
+    todo: ignore
+
+linter:
+  # Reference: https://dart.dev/tools/linter-rules#rules
+  rules:
+    # Error rules
+    - avoid_slow_async_io
+    - discarded_futures
+    - prefer_relative_imports
+    - unsafe_html
+
+    # Style rules
+    - avoid_double_and_int_checks
+    - avoid_escaping_inner_quotes
+    - avoid_js_rounded_ints
+    - directives_ordering
+    # TODO: Enable do_not_use_environment
+    # - do_not_use_environment
+    - eol_at_end_of_file
+    - lines_longer_than_80_chars
+    - omit_local_variable_types
+    - parameter_assignments
+    - prefer_single_quotes
+    - require_trailing_commas
+    - sort_constructors_first
+    - sort_unnamed_constructors_first
+    - unawaited_futures
+    - unnecessary_null_checks
+    - use_colored_box
+    - use_decorated_box
+
+    # Pub rules
+    - sort_pub_dependencies

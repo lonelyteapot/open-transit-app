@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:open_transit_app/src/core/providers.dart';
 
+import '../core/providers.dart';
 import 'settings_data.dart';
 import 'settings_repository.dart';
 
@@ -18,12 +20,12 @@ class SettingsNotifier extends Notifier<SettingsData> {
 
   void setThemeMode(final ThemeMode value) {
     state = state.copyWith(themeMode: value);
-    _settingsService.save(state);
+    unawaited(_settingsService.save(state));
   }
 
   void setShowDebugInfo(final bool value) {
     state = state.copyWith(showDebugInfo: value);
-    _settingsService.save(state);
+    unawaited(_settingsService.save(state));
   }
 }
 

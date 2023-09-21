@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:open_transit_app/src/transit_networks/network_data.dart';
+
+import 'network_data.dart';
 
 class SelectedNetworkNotifier extends AsyncNotifier<TransitNetwork?> {
   @override
@@ -16,4 +17,5 @@ class SelectedNetworkNotifier extends AsyncNotifier<TransitNetwork?> {
 
 final pSelectedTransitNetwork =
     AsyncNotifierProvider<SelectedNetworkNotifier, TransitNetwork?>(
-        SelectedNetworkNotifier.new);
+  SelectedNetworkNotifier.new,
+);

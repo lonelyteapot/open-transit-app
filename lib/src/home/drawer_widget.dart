@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:open_transit_app/src/settings/settings_notifier.dart';
-import 'package:open_transit_app/src/web_utils/web_utils.dart';
 import 'package:url_launcher/link.dart';
+
+import '../settings/settings_notifier.dart';
+import '../web_utils/web_utils.dart';
 
 final _apkDownloadUrl =
     WebUtils.instance?.getBaseUrl()?.resolve('open-transit-app.apk');
@@ -55,7 +56,7 @@ class DrawerContent extends ConsumerWidget {
               ButtonSegment(
                 value: ThemeMode.dark,
                 label: Text('Dark'),
-              )
+              ),
             ],
           ),
         ),
@@ -72,7 +73,7 @@ class _AndroidAppDownloadLink extends StatelessWidget {
   final Uri? url;
 
   Widget? _buildSubtitle() {
-    assert(kIsWeb);
+    assert(kIsWeb, 'Expected to be on the web platform');
     if (defaultTargetPlatform == TargetPlatform.android) {
       return const Text('for smoother experience');
     }

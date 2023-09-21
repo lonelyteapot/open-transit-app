@@ -2,13 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:open_transit_app/src/core/logging.dart';
-import 'package:open_transit_app/src/core/providers.dart';
-import 'package:open_transit_app/src/core/router.dart';
-import 'package:open_transit_app/src/settings/settings_notifier.dart';
-import 'package:open_transit_app/src/transit_routes/routes_cubit.dart';
-import 'package:open_transit_app/src/transit_routes/routes_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'src/core/logging.dart';
+import 'src/core/providers.dart';
+import 'src/core/router.dart';
+import 'src/settings/settings_notifier.dart';
+import 'src/transit_routes/routes_cubit.dart';
+import 'src/transit_routes/routes_repository.dart';
 
 Future<void> main() async {
   logger.d('Initializing Open Transit app');

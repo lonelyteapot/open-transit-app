@@ -1,11 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:open_transit_app/src/transit_networks/network_data.dart';
-import 'package:open_transit_app/src/transit_networks/networks_notifier.dart';
-import 'package:open_transit_app/src/transit_networks/selected_network_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+
+import '../transit_networks/network_data.dart';
+import '../transit_networks/networks_notifier.dart';
+import '../transit_networks/selected_network_notifier.dart';
 
 class MainView extends StatelessWidget {
   const MainView({super.key});
@@ -68,11 +71,13 @@ class TopButtons extends ConsumerWidget {
           onPressed: !isNetworkSelected
               ? null
               : () {
-                  context.read<PanelController?>()?.animatePanelToPosition(
-                        1,
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeOut,
-                      );
+                  unawaited(
+                    context.read<PanelController?>()?.animatePanelToPosition(
+                          1,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeOut,
+                        ),
+                  );
                   context.go('/routes');
                 },
           style: FilledButtonTheme.of(context).style!.copyWith(

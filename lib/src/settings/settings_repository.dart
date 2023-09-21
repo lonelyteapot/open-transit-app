@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:open_transit_app/src/settings/settings_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'settings_data.dart';
 
 @immutable
 class SettingsRepository {
-  final SharedPreferences prefs;
-
   const SettingsRepository({required SharedPreferences sharedPreferences})
       : prefs = sharedPreferences;
+
+  final SharedPreferences prefs;
 
   SettingsData load() {
     final themeMode = prefs.get('themeMode') ?? 'system';

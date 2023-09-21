@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:open_transit_app/src/core/utils.dart';
-import 'package:open_transit_app/src/home/drawer_widget.dart';
-import 'package:open_transit_app/src/home/map_widget.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+
+import '../core/utils.dart';
+import 'drawer_widget.dart';
+import 'map_widget.dart';
 
 const double sidebarWidth = 400;
 
@@ -28,11 +29,11 @@ class MainScaffold extends ConsumerWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isLandscape =
-            (constraints.maxWidth + sidebarWidth > constraints.maxHeight);
+            constraints.maxWidth + sidebarWidth > constraints.maxHeight;
         return Scaffold(
           extendBodyBehindAppBar: true,
           appBar: AppBar(
-            centerTitle: isLandscape ? false : true,
+            centerTitle: !isLandscape,
             forceMaterialTransparency: true,
             backgroundColor: Colors.transparent,
             systemOverlayStyle: SystemUiOverlayStyle(
@@ -85,61 +86,63 @@ class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
     );
     return provider.Provider<PanelController?>(
       create: (_) => PanelController(),
-      child: Builder(builder: (context) {
-        return SlidingUpPanel(
-          minHeight: 160,
-          maxHeight: maxPanelHeight,
-          borderRadius: borderRadius,
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
-              blurRadius: 8,
-            ),
-          ],
-          controller: context.watch<PanelController?>()!,
-          backdropEnabled: true,
-          backdropOpacity: 0,
-          color: Theme.of(context).colorScheme.surface,
-          panelBuilder: (scrollController) {
-            return MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: SafeArea(
-                child: Stack(
-                  alignment: Alignment.topCenter,
-                  fit: StackFit.expand,
-                  clipBehavior: Clip.none,
-                  children: [
-                    ClipRRect(
-                      borderRadius: borderRadius,
-                      child: provider.InheritedProvider.value(
-                        value: scrollController,
-                        child: Theme(
-                          data: Theme.of(context).copyWith(
-                            pageTransitionsTheme: PageTransitionsTheme(
-                              builders: Map.fromIterable(
-                                TargetPlatform.values,
-                                value: (_) =>
-                                    const FadeUpwardsPageTransitionsBuilder(),
+      child: Builder(
+        builder: (context) {
+          return SlidingUpPanel(
+            minHeight: 160,
+            maxHeight: maxPanelHeight,
+            borderRadius: borderRadius,
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+                blurRadius: 8,
+              ),
+            ],
+            controller: context.watch<PanelController?>(),
+            backdropEnabled: true,
+            backdropOpacity: 0,
+            color: Theme.of(context).colorScheme.surface,
+            panelBuilder: (scrollController) {
+              return MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: SafeArea(
+                  child: Stack(
+                    alignment: Alignment.topCenter,
+                    fit: StackFit.expand,
+                    clipBehavior: Clip.none,
+                    children: [
+                      ClipRRect(
+                        borderRadius: borderRadius,
+                        child: provider.InheritedProvider.value(
+                          value: scrollController,
+                          child: Theme(
+                            data: Theme.of(context).copyWith(
+                              pageTransitionsTheme: PageTransitionsTheme(
+                                builders: Map.fromIterable(
+                                  TargetPlatform.values,
+                                  value: (_) =>
+                                      const FadeUpwardsPageTransitionsBuilder(),
+                                ),
                               ),
                             ),
+                            child: widget.child,
                           ),
-                          child: widget.child,
                         ),
                       ),
-                    ),
-                    const Positioned(
-                      top: 0,
-                      child: _DragHandle(),
-                    ),
-                  ],
+                      const Positioned(
+                        top: 0,
+                        child: _DragHandle(),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
-          body: CustomMapWidget(key: widget.mapKey),
-        );
-      }),
+              );
+            },
+            body: CustomMapWidget(key: widget.mapKey),
+          );
+        },
+      ),
     );
   }
 }
@@ -191,7 +194,7 @@ class _LandscapeLayoutState extends State<_LandscapeLayout> {
           bottom: 0,
           left: 0,
           width: sidebarWidth,
-          child: Container(
+          child: DecoratedBox(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,
               boxShadow: [
@@ -227,7 +230,7 @@ class _DragHandle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Size size = Size(32, 4);
+    const size = Size(32, 4);
     return Semantics(
       label: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       container: true,

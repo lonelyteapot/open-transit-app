@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:open_transit_app/main_screen/drawer.dart';
-import 'package:open_transit_app/main_screen/map_widget.dart';
 import 'package:open_transit_app/src/core/utils.dart';
+import 'package:open_transit_app/src/home/drawer_widget.dart';
+import 'package:open_transit_app/src/home/map_widget.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 

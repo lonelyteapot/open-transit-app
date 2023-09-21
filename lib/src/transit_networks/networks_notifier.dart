@@ -1,18 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-@immutable
-class TransitNetwork {
-  const TransitNetwork({
-    required this.id,
-    required this.name,
-  });
-
-  final String id;
-  final String name;
-}
+import 'package:open_transit_app/src/transit_networks/network_data.dart';
 
 class TransitNetworksNotifier extends AsyncNotifier<List<TransitNetwork>> {
   @override
@@ -38,6 +27,6 @@ class TransitNetworksNotifier extends AsyncNotifier<List<TransitNetwork>> {
   }
 }
 
-final transitNetworksProvider =
+final pTransitNetworks =
     AsyncNotifierProvider<TransitNetworksNotifier, List<TransitNetwork>>(
         TransitNetworksNotifier.new);

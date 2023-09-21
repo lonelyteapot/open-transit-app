@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:open_transit_app/src/transit_networks/networks.dart';
-import 'package:open_transit_app/src/transit_networks/selected_network.dart';
+import 'package:open_transit_app/src/transit_networks/network_data.dart';
+import 'package:open_transit_app/src/transit_networks/networks_notifier.dart';
+import 'package:open_transit_app/src/transit_networks/selected_network_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -52,7 +53,7 @@ class TopButtons extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isNetworkSelected =
-        ref.watch(selectedNetworkProvider).valueOrNull != null;
+        ref.watch(pSelectedTransitNetwork).valueOrNull != null;
     return GridView.count(
       primary: false,
       physics: const NeverScrollableScrollPhysics(),
@@ -100,8 +101,8 @@ class NetworkSelector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncNetworks = ref.watch(transitNetworksProvider);
-    final asyncSelectedNetwork = ref.watch(selectedNetworkProvider);
+    final asyncNetworks = ref.watch(pTransitNetworks);
+    final asyncSelectedNetwork = ref.watch(pSelectedTransitNetwork);
     final deselectingEntry = DropdownMenuEntry<TransitNetwork?>(
       value: null,
       label: '',
@@ -128,7 +129,7 @@ class NetworkSelector extends ConsumerWidget {
           menuHeight: 615,
           initialSelection: asyncSelectedNetwork.valueOrNull,
           onSelected: (value) {
-            ref.read(selectedNetworkProvider.notifier).select(value);
+            ref.read(pSelectedTransitNetwork.notifier).select(value);
           },
           dropdownMenuEntries: asyncNetworks.maybeWhen(
             data: (data) => [deselectingEntry].followedBy(

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:open_transit_app/src/core/settings.dart';
+import 'package:open_transit_app/src/settings/settings_notifier.dart';
 import 'package:open_transit_app/src/web_utils/web_utils.dart';
 import 'package:url_launcher/link.dart';
 
@@ -26,9 +26,9 @@ class DrawerContent extends ConsumerWidget {
         const Spacer(),
         SwitchListTile(
           title: const Text('Debug info'),
-          value: ref.watch(settingsProvider).showDebugInfo,
+          value: ref.watch(pSettings).showDebugInfo,
           onChanged: (value) {
-            ref.read(settingsProvider.notifier).setShowDebugInfo(value);
+            ref.read(pSettings.notifier).setShowDebugInfo(value);
           },
         ),
         const Padding(
@@ -39,9 +39,9 @@ class DrawerContent extends ConsumerWidget {
           padding: const EdgeInsets.all(16).copyWith(top: 0),
           child: SegmentedButton<ThemeMode>(
             showSelectedIcon: false,
-            selected: {ref.watch(settingsProvider).themeMode},
+            selected: {ref.watch(pSettings).themeMode},
             onSelectionChanged: (value) {
-              ref.read(settingsProvider.notifier).setThemeMode(value.single);
+              ref.read(pSettings.notifier).setThemeMode(value.single);
             },
             segments: const [
               ButtonSegment(

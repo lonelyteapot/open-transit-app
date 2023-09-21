@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:open_transit_app/main_screen/main_scaffold.dart';
-import 'package:open_transit_app/main_screen/main_view.dart';
+import 'package:open_transit_app/src/home/home_layout.dart';
+import 'package:open_transit_app/src/home/home_view.dart';
 import 'package:open_transit_app/src/transit_routes/routes_view.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =

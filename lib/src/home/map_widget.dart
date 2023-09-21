@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../core/utils.dart';
-import '../settings/settings_notifier.dart';
+import '../settings/settings_provider.dart';
 
 const String _mapboxLightStyleId = 'cllhswcs9018i01qs99zdd7n6';
 const String _mapboxDarkStyleId = 'clmb10kfe01ac01pfdic1deec';
@@ -83,7 +83,7 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
       nonRotatedChildren: [
         // TODO: Add attributions
         // https://docs.mapbox.com/help/getting-started/attribution/
-        if (ref.watch(pSettings).showDebugInfo)
+        if (ref.watch(settingsProvider).showDebugInfo)
           SafeArea(
             child: _buildDebugInfo(),
           ),

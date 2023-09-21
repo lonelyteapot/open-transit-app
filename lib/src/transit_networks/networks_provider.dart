@@ -1,10 +1,11 @@
-import 'dart:async';
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'network.dart';
 
-class TransitNetworksNotifier extends AsyncNotifier<List<TransitNetwork>> {
+part 'networks_provider.g.dart';
+
+@riverpod
+class TransitNetworks extends _$TransitNetworks {
   @override
   FutureOr<List<TransitNetwork>> build() {
     return [
@@ -27,8 +28,3 @@ class TransitNetworksNotifier extends AsyncNotifier<List<TransitNetwork>> {
     ];
   }
 }
-
-final pTransitNetworks =
-    AsyncNotifierProvider<TransitNetworksNotifier, List<TransitNetwork>>(
-  TransitNetworksNotifier.new,
-);

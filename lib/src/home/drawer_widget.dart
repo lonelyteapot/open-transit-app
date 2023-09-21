@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/link.dart';
 
-import '../settings/settings_notifier.dart';
+import '../settings/settings_provider.dart';
 import '../web_utils/web_utils.dart';
 
 final _apkDownloadUrl =
@@ -27,9 +27,9 @@ class DrawerContent extends ConsumerWidget {
         const Spacer(),
         SwitchListTile(
           title: const Text('Debug info'),
-          value: ref.watch(pSettings).showDebugInfo,
+          value: ref.watch(settingsProvider).showDebugInfo,
           onChanged: (value) {
-            ref.read(pSettings.notifier).setShowDebugInfo(value);
+            ref.read(settingsProvider.notifier).setShowDebugInfo(value);
           },
         ),
         const Padding(
@@ -40,9 +40,9 @@ class DrawerContent extends ConsumerWidget {
           padding: const EdgeInsets.all(16).copyWith(top: 0),
           child: SegmentedButton<ThemeMode>(
             showSelectedIcon: false,
-            selected: {ref.watch(pSettings).themeMode},
+            selected: {ref.watch(settingsProvider).themeMode},
             onSelectionChanged: (value) {
-              ref.read(pSettings.notifier).setThemeMode(value.single);
+              ref.read(settingsProvider.notifier).setThemeMode(value.single);
             },
             segments: const [
               ButtonSegment(

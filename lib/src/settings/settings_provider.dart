@@ -1,19 +1,22 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../core/providers.dart';
+import '../core/shared_preferences.dart';
 import 'settings.dart';
 import 'settings_repository.dart';
 
-class SettingsNotifier extends Notifier<SettingsData> {
+part 'settings_provider.g.dart';
+
+@riverpod
+class Settings extends _$Settings {
   late final SettingsRepository _settingsService;
 
   @override
   SettingsData build() {
     _settingsService = SettingsRepository(
-      sharedPreferences: ref.watch(pSharedPreferences),
+      sharedPreferences: ref.watch(sharedPreferencesProvider),
     );
     return _settingsService.load();
   }
@@ -28,6 +31,3 @@ class SettingsNotifier extends Notifier<SettingsData> {
     unawaited(_settingsService.save(state));
   }
 }
-
-final pSettings =
-    NotifierProvider<SettingsNotifier, SettingsData>(SettingsNotifier.new);

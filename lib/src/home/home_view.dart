@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../transit_networks/network.dart';
-import '../transit_networks/networks_notifier.dart';
-import '../transit_networks/selected_network_notifier.dart';
+import '../transit_networks/networks_provider.dart';
+import '../transit_networks/selected_network_provider.dart';
 
 class MainView extends StatelessWidget {
   const MainView({super.key});
@@ -56,7 +56,7 @@ class TopButtons extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isNetworkSelected =
-        ref.watch(pSelectedTransitNetwork).valueOrNull != null;
+        ref.watch(selectedTransitNetworkProvider).valueOrNull != null;
     return GridView.count(
       primary: false,
       physics: const NeverScrollableScrollPhysics(),
@@ -106,8 +106,8 @@ class NetworkSelector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncNetworks = ref.watch(pTransitNetworks);
-    final asyncSelectedNetwork = ref.watch(pSelectedTransitNetwork);
+    final asyncNetworks = ref.watch(transitNetworksProvider);
+    final asyncSelectedNetwork = ref.watch(selectedTransitNetworkProvider);
     final deselectingEntry = DropdownMenuEntry<TransitNetwork?>(
       value: null,
       label: '',
@@ -134,7 +134,7 @@ class NetworkSelector extends ConsumerWidget {
           menuHeight: 615,
           initialSelection: asyncSelectedNetwork.valueOrNull,
           onSelected: (value) {
-            ref.read(pSelectedTransitNetwork.notifier).select(value);
+            ref.read(selectedTransitNetworkProvider.notifier).select(value);
           },
           dropdownMenuEntries: asyncNetworks.maybeWhen(
             data: (data) => [deselectingEntry].followedBy(

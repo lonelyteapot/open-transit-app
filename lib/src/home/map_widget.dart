@@ -74,9 +74,7 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
         backgroundColor:
             Theme.of(context).isDark ? const Color(0xFF292929) : Colors.white,
         interactionOptions: const InteractionOptions(
-          flags: InteractiveFlag.all &
-              ~InteractiveFlag.rotate &
-              ~InteractiveFlag.flingAnimation,
+          flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
         ),
       ),
       mapController: _mapController,

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/link.dart';
 
@@ -13,6 +14,11 @@ part 'drawer_widget.g.dart';
 Uri? apkDownloadUrl(ApkDownloadUrlRef ref) {
   // Non-null only on Web
   return WebUtils.instance?.getBaseUrl()?.resolve('open-transit-app.apk');
+}
+
+@Riverpod(keepAlive: true)
+FutureOr<PackageInfo> packageInfo(PackageInfoRef ref) async {
+  return PackageInfo.fromPlatform();
 }
 
 class DrawerContent extends ConsumerWidget {
@@ -36,6 +42,7 @@ class DrawerContent extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         const _ThemeSelector(),
+        const _AppInfo(),
       ],
     );
   }
@@ -73,16 +80,13 @@ class _AndroidAppDownloadLink extends StatelessWidget {
 }
 
 class _ThemeSelector extends ConsumerWidget {
-  const _ThemeSelector({
-    // ignore: unused_element
-    super.key,
-  });
+  const _ThemeSelector();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(settingsProvider).themeMode;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: SegmentedButton<ThemeMode>(
         showSelectedIcon: false,
         selected: {themeMode},
@@ -121,6 +125,29 @@ class _ThemeSelector extends ConsumerWidget {
             tooltip: 'Switch to dark theme',
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _AppInfo extends ConsumerWidget {
+  const _AppInfo();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final packageInfo = ref.watch(packageInfoProvider);
+    final appName = packageInfo.valueOrNull?.appName;
+    final version = packageInfo.valueOrNull?.version;
+    final buildNumber = packageInfo.valueOrNull?.buildNumber;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: Visibility(
+        visible: packageInfo.valueOrNull != null,
+        child: Text(
+          '$appName v$version ($buildNumber)',
+          style: Theme.of(context).textTheme.bodySmall,
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart';
 
-import 'routes_cubit.dart';
+import 'routes_provider.dart';
 
 class RoutesView extends ConsumerWidget {
   const RoutesView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final transitRoutes = ref.watch(transitRoutesProvider);
     return DecoratedBox(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.background,
@@ -17,29 +18,20 @@ class RoutesView extends ConsumerWidget {
       child: PrimaryScrollController(
         controller: context.watch<ScrollController>(),
         automaticallyInheritForPlatforms: TargetPlatform.values.toSet(),
-        child: BlocBuilder<TransitRoutesCubit, TransitRoutesState>(
-          builder: (context, transitRoutesState) {
-            switch (transitRoutesState) {
-              case TransitRoutesInitial():
-                return const SizedBox();
-              case TransitRoutesLoading():
-                return const Center(child: CircularProgressIndicator());
-              case TransitRoutesError(:final error):
-                return Center(child: Text('Error: $error'));
-              case TransitRoutesLoaded(:final routes):
-                return ListView.builder(
-                  itemCount: routes.length,
-                  itemBuilder: (context, index) {
-                    final route = routes[index];
-                    return ListTile(
-                      leading: const Icon(Icons.route),
-                      title: Text(route.name),
-                    );
-                  },
+        child: switch (transitRoutes) {
+          AsyncData(value: final routes) => ListView.builder(
+              itemCount: routes.length,
+              itemBuilder: (context, index) {
+                final route = routes[index];
+                return ListTile(
+                  leading: const Icon(Icons.route),
+                  title: Text(route.name),
                 );
-            }
-          },
-        ),
+              },
+            ),
+          AsyncError(:final error) => Center(child: Text('Error: $error')),
+          _ => const Center(child: CircularProgressIndicator()),
+        },
       ),
     );
   }

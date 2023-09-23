@@ -14,7 +14,7 @@ analyzer:
     todo: ignore
   plugins:
     # Used for riverpod_lint
-    - custom_lint
+    # - custom_lint
 
 linter:
   # Reference: https://dart.dev/tools/linter-rules#rules

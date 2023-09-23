@@ -3,9 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+import '../core/providers.dart';
 import '../transit_networks/network.dart';
 import '../transit_networks/networks_provider.dart';
 import '../transit_networks/selected_network_provider.dart';
@@ -72,7 +71,9 @@ class TopButtons extends ConsumerWidget {
               ? null
               : () {
                   unawaited(
-                    context.read<PanelController?>()?.animatePanelToPosition(
+                    ref
+                        .read(slidingPanelControllerProvider)
+                        ?.animatePanelToPosition(
                           1,
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeOut,

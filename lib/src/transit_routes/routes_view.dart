@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:provider/provider.dart';
 
+import '../core/providers.dart';
 import 'routes_provider.dart';
 
 class RoutesView extends ConsumerWidget {
@@ -16,7 +16,7 @@ class RoutesView extends ConsumerWidget {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       child: PrimaryScrollController(
-        controller: context.watch<ScrollController>(),
+        controller: ref.watch(primaryScrollControllerProvider),
         automaticallyInheritForPlatforms: TargetPlatform.values.toSet(),
         child: switch (transitRoutes) {
           AsyncData(value: final routes) => ListView.builder(

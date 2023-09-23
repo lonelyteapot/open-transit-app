@@ -17,7 +17,6 @@ dependencies:
   go_router: ^10.1.2
   latlong2: ^0.9.0
   logger: ^2.0.2
-  provider: ^6.0.5
   riverpod_annotation: ^2.1.5
   shared_preferences: ^2.2.1
   sliding_up_panel: ^2.0.0+1

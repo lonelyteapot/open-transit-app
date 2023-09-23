@@ -24,7 +24,7 @@ final transitRoutesRepositoryProvider =
 
 typedef TransitRoutesRepositoryRef
     = AutoDisposeProviderRef<TransitRoutesRepository>;
-String _$transitRoutesHash() => r'bba61fc718067408cf1af90a2f7de73a2eb4f90b';
+String _$transitRoutesHash() => r'04b56901139f5bf0360ef231014f97bd2bdfc593';
 
 /// See also [transitRoutes].
 @ProviderFor(transitRoutes)

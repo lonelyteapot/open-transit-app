@@ -27,6 +27,7 @@ dev_dependencies:
   build_runner: ^2.4.6
   custom_lint: ^0.5.3
   flutter_lints: ^2.0.0
+  flutter_native_splash: ^2.3.2
   flutter_test:
     sdk: flutter
   freezed: ^2.4.2
@@ -41,3 +42,7 @@ dependency_overrides:
 
 flutter:
   uses-material-design: true
+
+flutter_native_splash:
+  color: "#ffffff"
+  color_dark: "#292929"

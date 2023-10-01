@@ -1,15 +1,15 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'src/core/constants.dart';
 import 'src/core/logging.dart';
 import 'src/core/router.dart';
 import 'src/core/shared_preferences.dart';
 import 'src/settings/settings_provider.dart';
 
 Future<void> main() async {
-  logger.d('Initializing Open Transit app');
+  logger.d('Initializing $kAppNameBase app');
 
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -33,7 +33,7 @@ class MainApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
       routerConfig: router,
-      title: 'Open Transit (${kDebugMode ? 'Debug' : 'Dev'})',
+      title: '$kAppNameBase ($kAppBuildFlavor)',
       themeMode: ref.watch(settingsProvider).themeMode,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(

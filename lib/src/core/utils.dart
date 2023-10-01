@@ -5,3 +5,9 @@ extension ThemeDataExtension on ThemeData {
     return brightness == Brightness.dark;
   }
 }
+
+extension StringExtension on String {
+  String toCapitalized() {
+    return isEmpty ? '' : '${this[0].toUpperCase()}${substring(1)}';
+  }
+}

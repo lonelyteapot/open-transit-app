@@ -5,6 +5,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/link.dart';
 
+import '../core/constants.dart';
+import '../core/utils.dart';
 import '../settings/settings_provider.dart';
 import '../web_utils/web_utils.dart';
 
@@ -136,16 +138,19 @@ class _AppInfo extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final packageInfo = ref.watch(packageInfoProvider);
-    final appName = packageInfo.valueOrNull?.appName;
+    const appName = kAppNameBase;
     final version = packageInfo.valueOrNull?.version;
-    final buildNumber = packageInfo.valueOrNull?.buildNumber;
+    final platform =
+        kIsWeb ? 'Web' : defaultTargetPlatform.name.toCapitalized();
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Visibility(
         visible: packageInfo.valueOrNull != null,
         child: Text(
-          '$appName v$version ($buildNumber)',
-          style: Theme.of(context).textTheme.bodySmall,
+          '$appName v$version for $platform',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+              ),
           textAlign: TextAlign.center,
         ),
       ),

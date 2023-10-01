@@ -97,6 +97,7 @@ class _ThemeSelector extends ConsumerWidget {
         },
         style: const ButtonStyle(
           iconSize: MaterialStatePropertyAll<double>(24),
+          visualDensity: VisualDensity.standard,
         ),
         segments: [
           ButtonSegment(
@@ -146,7 +147,7 @@ class _AppInfo extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Visibility(
         visible: packageInfo.valueOrNull != null,
-        child: Text(
+        child: SelectableText(
           '$appName v$version for $platform',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),

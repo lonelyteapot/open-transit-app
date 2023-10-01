@@ -9,7 +9,7 @@ import '../core/utils.dart';
 import 'drawer_widget.dart';
 import 'map_widget.dart';
 
-const double sidebarWidth = 400;
+const double kSidebarWidth = 400;
 
 class MainScaffold extends ConsumerWidget {
   const MainScaffold({
@@ -28,8 +28,7 @@ class MainScaffold extends ConsumerWidget {
             '/';
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isLandscape =
-            constraints.maxWidth + sidebarWidth > constraints.maxHeight;
+        final isLandscape = constraints.maxWidth > 2 * kSidebarWidth;
         return Scaffold(
           extendBodyBehindAppBar: true,
           appBar: AppBar(
@@ -48,6 +47,7 @@ class MainScaffold extends ConsumerWidget {
           drawerScrimColor: Colors.black38,
           endDrawerEnableOpenDragGesture: false,
           endDrawer: const Drawer(
+            elevation: 0.5,
             child: SafeArea(
               child: DrawerContent(),
             ),
@@ -166,7 +166,7 @@ class _LandscapeLayout extends StatelessWidget {
         Positioned(
           top: 0,
           bottom: 0,
-          left: sidebarWidth,
+          left: kSidebarWidth,
           right: 0,
           child: CustomMapWidget(key: mapKey),
         ),
@@ -174,7 +174,7 @@ class _LandscapeLayout extends StatelessWidget {
           top: 0,
           bottom: 0,
           left: 0,
-          width: sidebarWidth,
+          width: kSidebarWidth,
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,
@@ -203,28 +203,37 @@ class _LandscapeLayout extends StatelessWidget {
   }
 }
 
-class _DragHandle extends StatelessWidget {
+class _DragHandle extends ConsumerWidget {
   const _DragHandle();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     const size = Size(32, 4);
-    return Semantics(
-      label: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      container: true,
-      child: SizedBox(
-        height: 16,
-        width: kMinInteractiveDimension,
-        child: Center(
-          child: Container(
-            height: size.height,
-            width: size.width,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(size.height / 2),
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurfaceVariant
-                  .withOpacity(0.4),
+    return GestureDetector(
+      onTap: () async {
+        final panelController = ref.read(slidingPanelControllerProvider)!;
+        if (panelController.panelPosition < 0.5) {
+          await panelController.open();
+        } else {
+          await panelController.close();
+        }
+      },
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: SizedBox(
+          height: 16,
+          width: kMinInteractiveDimension,
+          child: Center(
+            child: Container(
+              height: size.height,
+              width: size.width,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(size.height / 2),
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurfaceVariant
+                    .withOpacity(0.4),
+              ),
             ),
           ),
         ),

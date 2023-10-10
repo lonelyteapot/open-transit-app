@@ -5,9 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/providers.dart';
-import '../transit_networks/network.dart';
-import '../transit_networks/networks_provider.dart';
-import '../transit_networks/selected_network_provider.dart';
+import '../transit_network_selector/selected_network_provider.dart';
 
 class MainView extends StatelessWidget {
   const MainView({super.key});
@@ -36,8 +34,6 @@ class MainView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 TopButtons(),
-                SizedBox(height: 8),
-                NetworkSelector(),
               ],
             );
           },
@@ -88,68 +84,16 @@ class TopButtons extends ConsumerWidget {
         ),
         FilledButton.tonal(
           onPressed: !isNetworkSelected ? null : () {},
-          child: const Text('Stops'),
+          child: const Text('(blank)'),
         ),
         FilledButton.tonal(
           onPressed: !isNetworkSelected ? null : () {},
           style: FilledButtonTheme.of(context).style!.copyWith(
                 shape: _createRoundedCornerShape(base: 8, topRight: 16),
               ),
-          child: const Text('Stub'),
+          child: const Text('(blank)'),
         ),
       ],
-    );
-  }
-}
-
-class NetworkSelector extends ConsumerWidget {
-  const NetworkSelector({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final asyncNetworks = ref.watch(transitNetworksProvider);
-    final asyncSelectedNetwork = ref.watch(selectedTransitNetworkProvider);
-    final deselectingEntry = DropdownMenuEntry<TransitNetwork?>(
-      value: null,
-      label: '',
-      leadingIcon: Text(
-        'None',
-        style: TextStyle(color: Theme.of(context).disabledColor),
-      ),
-    );
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return DropdownMenu<TransitNetwork?>(
-          enabled: asyncNetworks.hasValue,
-          label: const Text('Location'),
-          leadingIcon: const Icon(Icons.location_city),
-          inputDecorationTheme: InputDecorationTheme(
-            filled: true,
-            fillColor: Theme.of(context).colorScheme.secondaryContainer,
-            contentPadding: const EdgeInsets.symmetric(vertical: 5),
-            border: const UnderlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-          ),
-          width: constraints.maxWidth,
-          menuHeight: 615,
-          initialSelection: asyncSelectedNetwork.valueOrNull,
-          onSelected: (value) {
-            ref.read(selectedTransitNetworkProvider.notifier).select(value);
-          },
-          dropdownMenuEntries: asyncNetworks.maybeWhen(
-            data: (data) => [deselectingEntry].followedBy(
-              data.map((network) {
-                return DropdownMenuEntry<TransitNetwork>(
-                  value: network,
-                  label: network.name,
-                );
-              }),
-            ).toList(),
-            orElse: List.empty,
-          ),
-        );
-      },
     );
   }
 }

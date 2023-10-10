@@ -6,6 +6,8 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../core/providers.dart';
 import '../core/utils.dart';
+import '../transit_network_selector/selected_network_provider.dart';
+import '../transit_network_selector/selector_widget.dart';
 import 'drawer_widget.dart';
 import 'map_widget.dart';
 
@@ -52,12 +54,35 @@ class MainScaffold extends ConsumerWidget {
               child: DrawerContent(),
             ),
           ),
-          body: isLandscape
-              ? _LandscapeLayout(mapKey: mapKey, child: body)
-              : _PortraitLayout(mapKey: mapKey, child: body),
+          body: _BodyWrapper(
+            child: isLandscape
+                ? _LandscapeLayout(mapKey: mapKey, child: body)
+                : _PortraitLayout(mapKey: mapKey, child: body),
+          ),
         );
       },
     );
+  }
+}
+
+class _BodyWrapper extends ConsumerWidget {
+  const _BodyWrapper({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final wrappedSelectedNetwork = ref.watch(selectedTransitNetworkProvider);
+    if (wrappedSelectedNetwork.valueOrNull == null) {
+      // TODO: Solve this navigation hell somehow
+      return Stack(
+        children: [
+          child,
+          LocationSwitcher(),
+        ],
+      );
+    }
+    return child;
   }
 }
 
@@ -85,6 +110,12 @@ class _PortraitLayout extends StatelessWidget {
       ],
       child: Consumer(
         builder: (context, ref, _) {
+          // TODO: Solve this navigation hell somehow
+          final wrappedSelectedNetwork =
+              ref.watch(selectedTransitNetworkProvider);
+          if (wrappedSelectedNetwork.valueOrNull == null) {
+            return CustomMapWidget(key: mapKey);
+          }
           return SlidingUpPanel(
             minHeight: 160,
             maxHeight: maxPanelHeight,
@@ -147,7 +178,7 @@ class _PortraitLayout extends StatelessWidget {
   }
 }
 
-class _LandscapeLayout extends StatelessWidget {
+class _LandscapeLayout extends ConsumerWidget {
   const _LandscapeLayout({
     // ignore: unused_element
     super.key,
@@ -159,7 +190,12 @@ class _LandscapeLayout extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // TODO: Solve this navigation hell somehow
+    final wrappedSelectedNetwork = ref.watch(selectedTransitNetworkProvider);
+    if (wrappedSelectedNetwork.valueOrNull == null) {
+      return CustomMapWidget(key: mapKey);
+    }
     return Stack(
       fit: StackFit.expand,
       children: [

@@ -8,6 +8,8 @@ import 'package:url_launcher/link.dart';
 import '../core/constants.dart';
 import '../core/utils.dart';
 import '../settings/settings_provider.dart';
+import '../transit_network_selector/selected_network_provider.dart';
+import '../transit_networks/network.dart';
 import '../web_utils/web_utils.dart';
 
 part 'drawer_widget.g.dart';
@@ -32,6 +34,7 @@ class DrawerContent extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        const _LocationSwitcher(),
         if (apkDownloadUrl != null)
           _AndroidAppDownloadLink(url: apkDownloadUrl),
         const Spacer(),
@@ -47,6 +50,45 @@ class DrawerContent extends ConsumerWidget {
         const _AppInfo(),
       ],
     );
+  }
+}
+
+class _LocationSwitcher extends ConsumerStatefulWidget {
+  const _LocationSwitcher();
+
+  @override
+  ConsumerState<_LocationSwitcher> createState() => _LocationSwitcherState();
+}
+
+class _LocationSwitcherState extends ConsumerState<_LocationSwitcher> {
+  void handlePress() {
+    Scaffold.of(context).closeEndDrawer();
+    ref.read(selectedTransitNetworkProvider.notifier).select(null);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedNetwork = ref.watch(selectedTransitNetworkProvider);
+    return switch (selectedNetwork) {
+      AsyncData(value: final TransitNetwork network) => ListTile(
+          onTap: handlePress,
+          leading: const Icon(Icons.location_city),
+          title: Text(network.name),
+          trailing: TextButton(
+            onPressed: handlePress,
+            child: const Text('Change'),
+          ),
+        ),
+      AsyncData(value: final void _) => ListTile(
+          onTap: handlePress,
+          leading: const Icon(Icons.location_city),
+          title: TextButton(
+            onPressed: handlePress,
+            child: const Text('Choose your location'),
+          ),
+        ),
+      _ => const Center(child: CircularProgressIndicator()),
+    };
   }
 }
 

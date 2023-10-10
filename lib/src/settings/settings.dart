@@ -8,5 +8,6 @@ class SettingsData with _$SettingsData {
   const factory SettingsData({
     required ThemeMode themeMode,
     required bool showDebugInfo,
+    required bool useCancellableTileProvider,
   }) = _SettingsData;
 }

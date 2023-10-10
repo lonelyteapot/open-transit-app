@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$SettingsData {
   ThemeMode get themeMode => throw _privateConstructorUsedError;
   bool get showDebugInfo => throw _privateConstructorUsedError;
+  bool get useCancellableTileProvider => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $SettingsDataCopyWith<SettingsData> get copyWith =>
@@ -30,7 +31,10 @@ abstract class $SettingsDataCopyWith<$Res> {
           SettingsData value, $Res Function(SettingsData) then) =
       _$SettingsDataCopyWithImpl<$Res, SettingsData>;
   @useResult
-  $Res call({ThemeMode themeMode, bool showDebugInfo});
+  $Res call(
+      {ThemeMode themeMode,
+      bool showDebugInfo,
+      bool useCancellableTileProvider});
 }
 
 /// @nodoc
@@ -48,6 +52,7 @@ class _$SettingsDataCopyWithImpl<$Res, $Val extends SettingsData>
   $Res call({
     Object? themeMode = null,
     Object? showDebugInfo = null,
+    Object? useCancellableTileProvider = null,
   }) {
     return _then(_value.copyWith(
       themeMode: null == themeMode
@@ -58,27 +63,34 @@ class _$SettingsDataCopyWithImpl<$Res, $Val extends SettingsData>
           ? _value.showDebugInfo
           : showDebugInfo // ignore: cast_nullable_to_non_nullable
               as bool,
+      useCancellableTileProvider: null == useCancellableTileProvider
+          ? _value.useCancellableTileProvider
+          : useCancellableTileProvider // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$_SettingsDataCopyWith<$Res>
+abstract class _$$SettingsDataImplCopyWith<$Res>
     implements $SettingsDataCopyWith<$Res> {
-  factory _$$_SettingsDataCopyWith(
-          _$_SettingsData value, $Res Function(_$_SettingsData) then) =
-      __$$_SettingsDataCopyWithImpl<$Res>;
+  factory _$$SettingsDataImplCopyWith(
+          _$SettingsDataImpl value, $Res Function(_$SettingsDataImpl) then) =
+      __$$SettingsDataImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({ThemeMode themeMode, bool showDebugInfo});
+  $Res call(
+      {ThemeMode themeMode,
+      bool showDebugInfo,
+      bool useCancellableTileProvider});
 }
 
 /// @nodoc
-class __$$_SettingsDataCopyWithImpl<$Res>
-    extends _$SettingsDataCopyWithImpl<$Res, _$_SettingsData>
-    implements _$$_SettingsDataCopyWith<$Res> {
-  __$$_SettingsDataCopyWithImpl(
-      _$_SettingsData _value, $Res Function(_$_SettingsData) _then)
+class __$$SettingsDataImplCopyWithImpl<$Res>
+    extends _$SettingsDataCopyWithImpl<$Res, _$SettingsDataImpl>
+    implements _$$SettingsDataImplCopyWith<$Res> {
+  __$$SettingsDataImplCopyWithImpl(
+      _$SettingsDataImpl _value, $Res Function(_$SettingsDataImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -86,8 +98,9 @@ class __$$_SettingsDataCopyWithImpl<$Res>
   $Res call({
     Object? themeMode = null,
     Object? showDebugInfo = null,
+    Object? useCancellableTileProvider = null,
   }) {
-    return _then(_$_SettingsData(
+    return _then(_$SettingsDataImpl(
       themeMode: null == themeMode
           ? _value.themeMode
           : themeMode // ignore: cast_nullable_to_non_nullable
@@ -96,57 +109,74 @@ class __$$_SettingsDataCopyWithImpl<$Res>
           ? _value.showDebugInfo
           : showDebugInfo // ignore: cast_nullable_to_non_nullable
               as bool,
+      useCancellableTileProvider: null == useCancellableTileProvider
+          ? _value.useCancellableTileProvider
+          : useCancellableTileProvider // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
 
 /// @nodoc
 
-class _$_SettingsData implements _SettingsData {
-  const _$_SettingsData({required this.themeMode, required this.showDebugInfo});
+class _$SettingsDataImpl implements _SettingsData {
+  const _$SettingsDataImpl(
+      {required this.themeMode,
+      required this.showDebugInfo,
+      required this.useCancellableTileProvider});
 
   @override
   final ThemeMode themeMode;
   @override
   final bool showDebugInfo;
+  @override
+  final bool useCancellableTileProvider;
 
   @override
   String toString() {
-    return 'SettingsData(themeMode: $themeMode, showDebugInfo: $showDebugInfo)';
+    return 'SettingsData(themeMode: $themeMode, showDebugInfo: $showDebugInfo, useCancellableTileProvider: $useCancellableTileProvider)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_SettingsData &&
+            other is _$SettingsDataImpl &&
             (identical(other.themeMode, themeMode) ||
                 other.themeMode == themeMode) &&
             (identical(other.showDebugInfo, showDebugInfo) ||
-                other.showDebugInfo == showDebugInfo));
+                other.showDebugInfo == showDebugInfo) &&
+            (identical(other.useCancellableTileProvider,
+                    useCancellableTileProvider) ||
+                other.useCancellableTileProvider ==
+                    useCancellableTileProvider));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, themeMode, showDebugInfo);
+  int get hashCode => Object.hash(
+      runtimeType, themeMode, showDebugInfo, useCancellableTileProvider);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_SettingsDataCopyWith<_$_SettingsData> get copyWith =>
-      __$$_SettingsDataCopyWithImpl<_$_SettingsData>(this, _$identity);
+  _$$SettingsDataImplCopyWith<_$SettingsDataImpl> get copyWith =>
+      __$$SettingsDataImplCopyWithImpl<_$SettingsDataImpl>(this, _$identity);
 }
 
 abstract class _SettingsData implements SettingsData {
   const factory _SettingsData(
       {required final ThemeMode themeMode,
-      required final bool showDebugInfo}) = _$_SettingsData;
+      required final bool showDebugInfo,
+      required final bool useCancellableTileProvider}) = _$SettingsDataImpl;
 
   @override
   ThemeMode get themeMode;
   @override
   bool get showDebugInfo;
   @override
+  bool get useCancellableTileProvider;
+  @override
   @JsonKey(ignore: true)
-  _$$_SettingsDataCopyWith<_$_SettingsData> get copyWith =>
+  _$$SettingsDataImplCopyWith<_$SettingsDataImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

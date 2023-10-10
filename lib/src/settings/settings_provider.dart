@@ -30,4 +30,9 @@ class Settings extends _$Settings {
     state = state.copyWith(showDebugInfo: value);
     unawaited(_settingsService.save(state));
   }
+
+  void setUseCancellableTileProvider(final bool value) {
+    state = state.copyWith(useCancellableTileProvider: value);
+    unawaited(_settingsService.save(state));
+  }
 }

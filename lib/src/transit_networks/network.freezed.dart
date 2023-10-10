@@ -63,22 +63,22 @@ class _$TransitNetworkCopyWithImpl<$Res, $Val extends TransitNetwork>
 }
 
 /// @nodoc
-abstract class _$$_TransitNetworkCopyWith<$Res>
+abstract class _$$TransitNetworkImplCopyWith<$Res>
     implements $TransitNetworkCopyWith<$Res> {
-  factory _$$_TransitNetworkCopyWith(
-          _$_TransitNetwork value, $Res Function(_$_TransitNetwork) then) =
-      __$$_TransitNetworkCopyWithImpl<$Res>;
+  factory _$$TransitNetworkImplCopyWith(_$TransitNetworkImpl value,
+          $Res Function(_$TransitNetworkImpl) then) =
+      __$$TransitNetworkImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String id, String name});
 }
 
 /// @nodoc
-class __$$_TransitNetworkCopyWithImpl<$Res>
-    extends _$TransitNetworkCopyWithImpl<$Res, _$_TransitNetwork>
-    implements _$$_TransitNetworkCopyWith<$Res> {
-  __$$_TransitNetworkCopyWithImpl(
-      _$_TransitNetwork _value, $Res Function(_$_TransitNetwork) _then)
+class __$$TransitNetworkImplCopyWithImpl<$Res>
+    extends _$TransitNetworkCopyWithImpl<$Res, _$TransitNetworkImpl>
+    implements _$$TransitNetworkImplCopyWith<$Res> {
+  __$$TransitNetworkImplCopyWithImpl(
+      _$TransitNetworkImpl _value, $Res Function(_$TransitNetworkImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -87,7 +87,7 @@ class __$$_TransitNetworkCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
   }) {
-    return _then(_$_TransitNetwork(
+    return _then(_$TransitNetworkImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -102,10 +102,10 @@ class __$$_TransitNetworkCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_TransitNetwork
+class _$TransitNetworkImpl
     with DiagnosticableTreeMixin
     implements _TransitNetwork {
-  const _$_TransitNetwork({required this.id, required this.name});
+  const _$TransitNetworkImpl({required this.id, required this.name});
 
   @override
   final String id;
@@ -130,7 +130,7 @@ class _$_TransitNetwork
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_TransitNetwork &&
+            other is _$TransitNetworkImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name));
   }
@@ -141,14 +141,15 @@ class _$_TransitNetwork
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_TransitNetworkCopyWith<_$_TransitNetwork> get copyWith =>
-      __$$_TransitNetworkCopyWithImpl<_$_TransitNetwork>(this, _$identity);
+  _$$TransitNetworkImplCopyWith<_$TransitNetworkImpl> get copyWith =>
+      __$$TransitNetworkImplCopyWithImpl<_$TransitNetworkImpl>(
+          this, _$identity);
 }
 
 abstract class _TransitNetwork implements TransitNetwork {
   const factory _TransitNetwork(
       {required final String id,
-      required final String name}) = _$_TransitNetwork;
+      required final String name}) = _$TransitNetworkImpl;
 
   @override
   String get id;
@@ -156,6 +157,6 @@ abstract class _TransitNetwork implements TransitNetwork {
   String get name;
   @override
   @JsonKey(ignore: true)
-  _$$_TransitNetworkCopyWith<_$_TransitNetwork> get copyWith =>
+  _$$TransitNetworkImplCopyWith<_$TransitNetworkImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

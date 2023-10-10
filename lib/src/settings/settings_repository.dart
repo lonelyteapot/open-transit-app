@@ -13,11 +13,14 @@ class SettingsRepository {
   SettingsData load() {
     final themeMode = prefs.get('themeMode') ?? 'system';
     final showDebugInfo = prefs.getBool('showDebugInfo') ?? false;
+    final useCancellableTileProvider =
+        prefs.getBool('useCancellableTileProvider') ?? true;
     return SettingsData(
       themeMode: ThemeMode.values.firstWhere(
         (element) => element.name == themeMode,
       ),
       showDebugInfo: showDebugInfo,
+      useCancellableTileProvider: useCancellableTileProvider,
     );
   }
 
@@ -26,6 +29,10 @@ class SettingsRepository {
     await Future.wait([
       prefs.setString('themeMode', settings.themeMode.name),
       prefs.setBool('showDebugInfo', settings.showDebugInfo),
+      prefs.setBool(
+        'useCancellableTileProvider',
+        settings.useCancellableTileProvider,
+      ),
     ]);
   }
 }

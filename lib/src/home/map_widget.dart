@@ -82,7 +82,9 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
       mapController: _mapController,
       children: [
         TileLayer(
-          tileProvider: CancellableNetworkTileProvider(),
+          tileProvider: ref.watch(settingsProvider).useCancellableTileProvider
+              ? CancellableNetworkTileProvider()
+              : NetworkTileProvider(),
           urlTemplate: _buildMapboxUrl(
             styleId: Theme.of(context).isDark
                 ? _mapboxDarkStyleId

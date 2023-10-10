@@ -39,6 +39,19 @@ class DrawerContent extends ConsumerWidget {
           _AndroidAppDownloadLink(url: apkDownloadUrl),
         const Spacer(),
         SwitchListTile(
+          title: const Text('Cancel map requests'),
+          value: ref.watch(settingsProvider).useCancellableTileProvider,
+          onChanged: (value) {
+            ref
+                .read(settingsProvider.notifier)
+                .setUseCancellableTileProvider(value);
+            _showSnackBar(
+              context,
+              'Move the map to unload old tiles for changes to take effect',
+            );
+          },
+        ),
+        SwitchListTile(
           title: const Text('Show debugging info'),
           value: ref.watch(settingsProvider).showDebugInfo,
           onChanged: (value) {
@@ -199,4 +212,15 @@ class _AppInfo extends ConsumerWidget {
       ),
     );
   }
+}
+
+void _showSnackBar(BuildContext context, String text) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(text),
+      behavior: SnackBarBehavior.floating,
+      dismissDirection: DismissDirection.horizontal,
+      duration: const Duration(seconds: 8),
+    ),
+  );
 }

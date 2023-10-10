@@ -1,7 +1,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'network.freezed.dart';
+part 'network_model.freezed.dart';
 
 @freezed
 class TransitNetwork with _$TransitNetwork {

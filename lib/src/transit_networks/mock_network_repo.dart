@@ -1,15 +1,16 @@
+import 'dart:async';
+
 import 'package:decimal/decimal.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import 'network.dart';
+import 'network_model.dart';
+import 'network_repo.dart';
 
-part 'networks_provider.g.dart';
+class MockTransitNetworkRepository implements TransitNetworkRepository {
+  const MockTransitNetworkRepository();
 
-@riverpod
-class TransitNetworks extends _$TransitNetworks {
   @override
-  FutureOr<List<TransitNetwork>> build() async {
-    await Future.delayed(const Duration(seconds: 3));
+  FutureOr<List<TransitNetwork>> getAllNetworks() async {
+    await Future.delayed(const Duration(seconds: 1));
     return [
       TransitNetwork(
         id: 'b2e8c9dd-0cf5-41f1-9b6b-b54e400c626f',

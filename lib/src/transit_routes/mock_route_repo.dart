@@ -1,17 +1,16 @@
-class TransitRoute {
-  const TransitRoute({
-    required this.id,
-    required this.number,
-    required this.name,
-  });
+import 'dart:async';
 
-  final String id;
-  final String number;
-  final String name;
-}
+import 'route_model.dart';
+import 'route_repo.dart';
 
-class TransitRoutesRepository {
-  Future<List<TransitRoute>> fetchRoutes() async {
+class MockTransitRouteRepository implements TransitRouteRepository {
+  const MockTransitRouteRepository();
+
+  @override
+  String get networkId => throw UnimplementedError();
+
+  @override
+  FutureOr<List<TransitRoute>> getAllRoutes() async {
     await Future.delayed(const Duration(seconds: 2));
     return [
       const TransitRoute(

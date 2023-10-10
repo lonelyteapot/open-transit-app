@@ -1,30 +1,30 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'routes_provider.dart';
+part of 'route_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$transitRoutesRepositoryHash() =>
-    r'04825a2c3806615665f6fcfdc85cd8acdf245d5b';
+String _$transitRouteRepositoryHash() =>
+    r'39981efb006c6595dbfa669c30c7db94c915aef7';
 
-/// See also [transitRoutesRepository].
-@ProviderFor(transitRoutesRepository)
-final transitRoutesRepositoryProvider =
-    AutoDisposeProvider<TransitRoutesRepository>.internal(
-  transitRoutesRepository,
-  name: r'transitRoutesRepositoryProvider',
+/// See also [transitRouteRepository].
+@ProviderFor(transitRouteRepository)
+final transitRouteRepositoryProvider =
+    AutoDisposeProvider<TransitRouteRepository>.internal(
+  transitRouteRepository,
+  name: r'transitRouteRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$transitRoutesRepositoryHash,
+      : _$transitRouteRepositoryHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef TransitRoutesRepositoryRef
-    = AutoDisposeProviderRef<TransitRoutesRepository>;
-String _$transitRoutesHash() => r'04b56901139f5bf0360ef231014f97bd2bdfc593';
+typedef TransitRouteRepositoryRef
+    = AutoDisposeProviderRef<TransitRouteRepository>;
+String _$transitRoutesHash() => r'6a2234d2673e3a5bfbe2328a1ceb0b4d3d48bd76';
 
 /// See also [transitRoutes].
 @ProviderFor(transitRoutes)

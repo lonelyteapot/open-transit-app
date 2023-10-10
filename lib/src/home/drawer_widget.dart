@@ -9,7 +9,7 @@ import '../core/constants.dart';
 import '../core/utils.dart';
 import '../settings/settings_provider.dart';
 import '../transit_network_selector/selected_network_provider.dart';
-import '../transit_networks/network.dart';
+import '../transit_networks/network_model.dart';
 import '../web_utils/web_utils.dart';
 
 part 'drawer_widget.g.dart';

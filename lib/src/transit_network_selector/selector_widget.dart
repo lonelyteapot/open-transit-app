@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../transit_networks/networks_provider.dart';
+import '../transit_networks/network_provider.dart';
 import 'selected_network_provider.dart';
 
 class LocationSwitcher extends ConsumerWidget {

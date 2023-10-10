@@ -7,7 +7,7 @@ part of 'selected_network_provider.dart';
 // **************************************************************************
 
 String _$selectedTransitNetworkHash() =>
-    r'6d1e091eb05b3eecd52a46de6d9927218fb691e7';
+    r'd39960beef49e357fe661f8af614942a3a1e0179';
 
 /// See also [SelectedTransitNetwork].
 @ProviderFor(SelectedTransitNetwork)

@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../transit_networks/network.dart';
-import '../transit_networks/networks_provider.dart';
+import '../transit_networks/network_model.dart';
+import '../transit_networks/network_provider.dart';
 
 part 'selected_network_provider.g.dart';
 

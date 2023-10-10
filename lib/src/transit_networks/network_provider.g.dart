@@ -1,12 +1,30 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'networks_provider.dart';
+part of 'network_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$transitNetworksHash() => r'55640cfdb9766e01c6cf352abbe816619f5c8c08';
+String _$transitNetworkRepositoryHash() =>
+    r'e193f2ad577522e3e81140238cfdb38f2ad5ff16';
+
+/// See also [transitNetworkRepository].
+@ProviderFor(transitNetworkRepository)
+final transitNetworkRepositoryProvider =
+    AutoDisposeProvider<TransitNetworkRepository>.internal(
+  transitNetworkRepository,
+  name: r'transitNetworkRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$transitNetworkRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef TransitNetworkRepositoryRef
+    = AutoDisposeProviderRef<TransitNetworkRepository>;
+String _$transitNetworksHash() => r'fe02f807ec1e5dffae3df480161e7d31ba9a4db6';
 
 /// See also [TransitNetworks].
 @ProviderFor(TransitNetworks)

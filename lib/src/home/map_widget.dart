@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:decimal/decimal.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -7,12 +8,19 @@ import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_ti
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../core/logging.dart';
 import '../core/utils.dart';
 import '../settings/settings_provider.dart';
+import '../transit_network_selector/selected_network_provider.dart';
 
 const String _mapboxLightStyleId = 'cllhswcs9018i01qs99zdd7n6';
 const String _mapboxDarkStyleId = 'clmb10kfe01ac01pfdic1deec';
 const String _mapboxAccessToken = String.fromEnvironment('MAPBOX_ACCESS_TOKEN');
+
+final Decimal kWorldCenterLat = Decimal.fromInt(25);
+final Decimal kWorldCenterLon = Decimal.fromInt(46);
+const double kWorldCenterZoom = 2.0;
+const double kDefaultZoom = 12.0;
 
 String _buildMapboxUrl({required String styleId, required String accessToken}) {
   return 'https://api.mapbox.com/styles/v1/lonelyteapot/$styleId/tiles/256/{z}/{x}/{y}{r}?access_token=$accessToken';
@@ -64,11 +72,41 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
     });
   }
 
+  void moveTo(LatLng latLng, {required double zoom}) {
+    logger.d('Moving to $latLng at zoom $zoom');
+    final result = _mapController.move(latLng, zoom);
+    if (result == false) {
+      // TODO: Error handling
+      _showErrorSnackBar(context, 'Failed to move the map');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    ref.listen(selectedTransitNetworkProvider, (prev, next) {
+      if (prev == null || !prev.hasValue || !next.hasValue) {
+        return;
+      }
+      if (prev.value != next.value) {
+        var nextCenterLat = next.valueOrNull?.centerLat;
+        var nextCenterLon = next.valueOrNull?.centerLon;
+        double? nextZoom = kDefaultZoom;
+        if (nextCenterLat == null || nextCenterLon == null) {
+          nextCenterLat = kWorldCenterLat;
+          nextCenterLon = kWorldCenterLon;
+          nextZoom = kWorldCenterZoom;
+        }
+        moveTo(
+          LatLng(nextCenterLat.toDouble(), nextCenterLon.toDouble()),
+          zoom: nextZoom,
+        );
+      }
+    });
     return FlutterMap(
       options: MapOptions(
-        initialCenter: const LatLng(56.32867, 44.00205),
+        initialCenter:
+            LatLng(kWorldCenterLat.toDouble(), kWorldCenterLon.toDouble()),
+        initialZoom: kWorldCenterZoom,
         minZoom: 2,
         maxZoom: 18,
         backgroundColor:

@@ -18,6 +18,8 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$TransitNetwork {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
+  Decimal? get centerLat => throw _privateConstructorUsedError;
+  Decimal? get centerLon => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $TransitNetworkCopyWith<TransitNetwork> get copyWith =>
@@ -30,7 +32,7 @@ abstract class $TransitNetworkCopyWith<$Res> {
           TransitNetwork value, $Res Function(TransitNetwork) then) =
       _$TransitNetworkCopyWithImpl<$Res, TransitNetwork>;
   @useResult
-  $Res call({String id, String name});
+  $Res call({String id, String name, Decimal? centerLat, Decimal? centerLon});
 }
 
 /// @nodoc
@@ -48,6 +50,8 @@ class _$TransitNetworkCopyWithImpl<$Res, $Val extends TransitNetwork>
   $Res call({
     Object? id = null,
     Object? name = null,
+    Object? centerLat = freezed,
+    Object? centerLon = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -58,6 +62,14 @@ class _$TransitNetworkCopyWithImpl<$Res, $Val extends TransitNetwork>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      centerLat: freezed == centerLat
+          ? _value.centerLat
+          : centerLat // ignore: cast_nullable_to_non_nullable
+              as Decimal?,
+      centerLon: freezed == centerLon
+          ? _value.centerLon
+          : centerLon // ignore: cast_nullable_to_non_nullable
+              as Decimal?,
     ) as $Val);
   }
 }
@@ -70,7 +82,7 @@ abstract class _$$TransitNetworkImplCopyWith<$Res>
       __$$TransitNetworkImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String name});
+  $Res call({String id, String name, Decimal? centerLat, Decimal? centerLon});
 }
 
 /// @nodoc
@@ -86,6 +98,8 @@ class __$$TransitNetworkImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? name = null,
+    Object? centerLat = freezed,
+    Object? centerLon = freezed,
   }) {
     return _then(_$TransitNetworkImpl(
       id: null == id
@@ -96,34 +110,36 @@ class __$$TransitNetworkImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      centerLat: freezed == centerLat
+          ? _value.centerLat
+          : centerLat // ignore: cast_nullable_to_non_nullable
+              as Decimal?,
+      centerLon: freezed == centerLon
+          ? _value.centerLon
+          : centerLon // ignore: cast_nullable_to_non_nullable
+              as Decimal?,
     ));
   }
 }
 
 /// @nodoc
 
-class _$TransitNetworkImpl
-    with DiagnosticableTreeMixin
-    implements _TransitNetwork {
-  const _$TransitNetworkImpl({required this.id, required this.name});
+class _$TransitNetworkImpl implements _TransitNetwork {
+  const _$TransitNetworkImpl(
+      {required this.id, required this.name, this.centerLat, this.centerLon});
 
   @override
   final String id;
   @override
   final String name;
+  @override
+  final Decimal? centerLat;
+  @override
+  final Decimal? centerLon;
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'TransitNetwork(id: $id, name: $name)';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'TransitNetwork'))
-      ..add(DiagnosticsProperty('id', id))
-      ..add(DiagnosticsProperty('name', name));
+  String toString() {
+    return 'TransitNetwork(id: $id, name: $name, centerLat: $centerLat, centerLon: $centerLon)';
   }
 
   @override
@@ -132,11 +148,15 @@ class _$TransitNetworkImpl
         (other.runtimeType == runtimeType &&
             other is _$TransitNetworkImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name));
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.centerLat, centerLat) ||
+                other.centerLat == centerLat) &&
+            (identical(other.centerLon, centerLon) ||
+                other.centerLon == centerLon));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, name);
+  int get hashCode => Object.hash(runtimeType, id, name, centerLat, centerLon);
 
   @JsonKey(ignore: true)
   @override
@@ -149,12 +169,18 @@ class _$TransitNetworkImpl
 abstract class _TransitNetwork implements TransitNetwork {
   const factory _TransitNetwork(
       {required final String id,
-      required final String name}) = _$TransitNetworkImpl;
+      required final String name,
+      final Decimal? centerLat,
+      final Decimal? centerLon}) = _$TransitNetworkImpl;
 
   @override
   String get id;
   @override
   String get name;
+  @override
+  Decimal? get centerLat;
+  @override
+  Decimal? get centerLon;
   @override
   @JsonKey(ignore: true)
   _$$TransitNetworkImplCopyWith<_$TransitNetworkImpl> get copyWith =>

@@ -10,14 +10,14 @@ dependencies:
   dio: ^5.3.3
   flutter:
     sdk: flutter
-  flutter_map: ^6.0.0-dev.3
-  flutter_map_cancellable_tile_provider: ^1.0.0-preview
+  flutter_map: ^6.0.0
+  flutter_map_cancellable_tile_provider: ^1.0.0
   flutter_riverpod: ^2.4.0
   freezed_annotation: ^2.4.1
   go_router: ^11.0.0
   latlong2: ^0.9.0
   logger: ^2.0.2
-  package_info_plus: ^4.1.0
+  package_info_plus: ^5.0.0
   riverpod_annotation: ^2.1.5
   shared_preferences: ^2.2.1
   sliding_up_panel: ^2.0.0+1
@@ -31,14 +31,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   freezed: ^2.4.2
-  riverpod_generator: ^2.3.2
+  riverpod_generator: ^3.0.0-dev.3
   riverpod_lint: ^2.1.0
 
 dependency_overrides:
-  flutter_map:
+  flutter_map_cancellable_tile_provider:
     git:
-      url: https://github.com/fleaflet/flutter_map.git
-      ref: d35d672757ddc9669f99a5c1cd370749e927198d
+      url: https://github.com/lonelyteapot/flutter_map_cancellable_tile_provider.git
+      ref: patch-1
 
 flutter:
   uses-material-design: true

@@ -15,7 +15,7 @@ const String _mapboxDarkStyleId = 'clmb10kfe01ac01pfdic1deec';
 const String _mapboxAccessToken = String.fromEnvironment('MAPBOX_ACCESS_TOKEN');
 
 String _buildMapboxUrl({required String styleId, required String accessToken}) {
-  return 'https://api.mapbox.com/styles/v1/lonelyteapot/$styleId/tiles/256/{z}/{x}/{y}@2x?access_token=$accessToken';
+  return 'https://api.mapbox.com/styles/v1/lonelyteapot/$styleId/tiles/256/{z}/{x}/{y}{r}?access_token=$accessToken';
 }
 
 class CustomMapWidget extends ConsumerStatefulWidget {
@@ -73,19 +73,13 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
         maxZoom: 18,
         backgroundColor:
             Theme.of(context).isDark ? const Color(0xFF292929) : Colors.white,
-        interactionOptions: const InteractionOptions(
+        interactionOptions: InteractionOptions(
           flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+          cursorKeyboardRotationOptions:
+              CursorKeyboardRotationOptions.disabled(),
         ),
       ),
       mapController: _mapController,
-      nonRotatedChildren: [
-        // TODO: Add attributions
-        // https://docs.mapbox.com/help/getting-started/attribution/
-        if (ref.watch(settingsProvider).showDebugInfo)
-          SafeArea(
-            child: _buildDebugInfo(),
-          ),
-      ],
       children: [
         TileLayer(
           tileProvider: CancellableNetworkTileProvider(),
@@ -97,6 +91,7 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
           ),
           userAgentPackageName: 'open_transit.open_transit_app',
           maxZoom: 18,
+          retinaMode: true,
           reset: _tileLayerResetController.stream,
           errorTileCallback: (tile, error, stackTrace) {
             final c = tile.coordinates;
@@ -107,8 +102,13 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
               'Failed to load a map tile at (${c.x}, ${c.y}, ${c.z}): $errmsg',
             );
           },
-          // Custom headers are disallowed due to an issue with CORS in Firefox
-        )..tileProvider.headers.remove('User-Agent'),
+        ),
+        // TODO: Add attributions
+        // https://docs.mapbox.com/help/getting-started/attribution/
+        if (ref.watch(settingsProvider).showDebugInfo)
+          SafeArea(
+            child: _buildDebugInfo(),
+          ),
       ],
     );
   }
@@ -140,6 +140,7 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
 }
 
 void _showErrorSnackBar(BuildContext context, String text) {
+  ScaffoldMessenger.of(context).clearSnackBars();
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(

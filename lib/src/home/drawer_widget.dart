@@ -194,7 +194,6 @@ class _AppInfo extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final packageInfo = ref.watch(packageInfoProvider);
-    const appName = kAppNameBase;
     final version = packageInfo.valueOrNull?.version;
     final platform =
         kIsWeb ? 'Web' : defaultTargetPlatform.name.toCapitalized();
@@ -203,7 +202,7 @@ class _AppInfo extends ConsumerWidget {
       child: Visibility(
         visible: packageInfo.valueOrNull != null,
         child: SelectableText(
-          '$appName v$version for $platform',
+          '$kAppNameBase v$version ($kAppBuildFlavor Build) for $platform',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
               ),

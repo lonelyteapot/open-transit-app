@@ -1,6 +1,6 @@
 {
-    "name": "Open Transit (Web)",
-    "short_name": "Open Transit (Web)",
+    "name": "Open Transit (Web/Dev)",
+    "short_name": "Open Transit (Web/Dev)",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

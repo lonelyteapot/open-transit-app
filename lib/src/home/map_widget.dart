@@ -8,6 +8,7 @@ import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_ti
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../core/constants.dart';
 import '../core/logging.dart';
 import '../core/utils.dart';
 import '../settings/settings_provider.dart';
@@ -129,7 +130,7 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
                 : _mapboxLightStyleId,
             accessToken: _mapboxAccessToken,
           ),
-          userAgentPackageName: 'open_transit.open_transit_app',
+          userAgentPackageName: kUserAgentPackageName,
           maxZoom: 18,
           retinaMode: true,
           reset: _tileLayerResetController.stream,

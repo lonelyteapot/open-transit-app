@@ -1,24 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'settings_provider.dart';
+part of 'graphql.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$settingsHash() => r'a7e721e437a35a2451696f242f262882a9f5bad7';
+String _$graphqlClientHash() => r'b2bd5307d04de9be42c932ed5e064e764aba13a8';
 
-/// See also [Settings].
-@ProviderFor(Settings)
-final settingsProvider = NotifierProvider<Settings, SettingsData>.internal(
-  Settings.new,
-  name: r'settingsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$settingsHash,
+/// See also [graphqlClient].
+@ProviderFor(graphqlClient)
+final graphqlClientProvider = Provider<GraphQLClient>.internal(
+  graphqlClient,
+  name: r'graphqlClientProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$graphqlClientHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$Settings = Notifier<SettingsData>;
+typedef GraphqlClientRef = ProviderRef<GraphQLClient>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter

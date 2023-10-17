@@ -9,7 +9,7 @@ class MockTransitNetworkRepository implements TransitNetworkRepository {
   const MockTransitNetworkRepository();
 
   @override
-  FutureOr<List<TransitNetwork>> getAllNetworks() async {
+  FutureOr<List<TransitNetwork>> getNetworks() async {
     await Future.delayed(const Duration(seconds: 1));
     return [
       TransitNetwork(

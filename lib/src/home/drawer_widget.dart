@@ -38,13 +38,47 @@ class DrawerContent extends ConsumerWidget {
         if (apkDownloadUrl != null)
           _AndroidAppDownloadLink(url: apkDownloadUrl),
         const Spacer(),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: TextField(
+            controller: TextEditingController(
+              text: ref.watch(settingsProvider).graphqlEndpointUrl,
+            ),
+            decoration: const InputDecoration(
+              labelText: 'GraphQL endpoint url',
+              hintText: 'http://127.0.0.1/graphql',
+            ),
+            keyboardType: TextInputType.url,
+            onSubmitted: (value) {
+              final settingsNotifier = ref.read(settingsProvider.notifier);
+              settingsNotifier.modifyAndSave(
+                (oldSettings) => oldSettings.copyWith(
+                  graphqlEndpointUrl: value,
+                ),
+              );
+            },
+          ),
+        ),
+        SwitchListTile(
+          title: const Text('Use mock data'),
+          value: ref.watch(settingsProvider).useMockData,
+          onChanged: (value) {
+            final settingsNotifier = ref.read(settingsProvider.notifier);
+            settingsNotifier.modifyAndSave(
+              (oldSettings) => oldSettings.copyWith(useMockData: value),
+            );
+          },
+        ),
         SwitchListTile(
           title: const Text('Cancel map requests'),
           value: ref.watch(settingsProvider).useCancellableTileProvider,
           onChanged: (value) {
-            ref
-                .read(settingsProvider.notifier)
-                .setUseCancellableTileProvider(value);
+            final settingsNotifier = ref.read(settingsProvider.notifier);
+            settingsNotifier.modifyAndSave(
+              (oldSettings) => oldSettings.copyWith(
+                useCancellableTileProvider: value,
+              ),
+            );
             _showSnackBar(
               context,
               'Move the map to unload old tiles for changes to take effect',
@@ -55,7 +89,10 @@ class DrawerContent extends ConsumerWidget {
           title: const Text('Show debugging info'),
           value: ref.watch(settingsProvider).showDebugInfo,
           onChanged: (value) {
-            ref.read(settingsProvider.notifier).setShowDebugInfo(value);
+            final settingsNotifier = ref.read(settingsProvider.notifier);
+            settingsNotifier.modifyAndSave(
+              (oldSettings) => oldSettings.copyWith(showDebugInfo: value),
+            );
           },
         ),
         const SizedBox(height: 8),
@@ -148,7 +185,10 @@ class _ThemeSelector extends ConsumerWidget {
         showSelectedIcon: false,
         selected: {themeMode},
         onSelectionChanged: (value) {
-          ref.read(settingsProvider.notifier).setThemeMode(value.single);
+          final settingsNotifier = ref.read(settingsProvider.notifier);
+          settingsNotifier.modifyAndSave(
+            (oldSettings) => oldSettings.copyWith(themeMode: value.single),
+          );
         },
         style: const ButtonStyle(
           iconSize: MaterialStatePropertyAll<double>(24),

@@ -7,7 +7,7 @@ part of 'route_provider.dart';
 // **************************************************************************
 
 String _$transitRouteRepositoryHash() =>
-    r'39981efb006c6595dbfa669c30c7db94c915aef7';
+    r'dacc1ad67e1adc5665d969d99fa93796e9d2d7d6';
 
 /// See also [transitRouteRepository].
 @ProviderFor(transitRouteRepository)
@@ -24,7 +24,7 @@ final transitRouteRepositoryProvider =
 
 typedef TransitRouteRepositoryRef
     = AutoDisposeProviderRef<TransitRouteRepository>;
-String _$transitRoutesHash() => r'6a2234d2673e3a5bfbe2328a1ceb0b4d3d48bd76';
+String _$transitRoutesHash() => r'e8b98bd557d873f2c9a7a0c973ec7e5437cb5f0c';
 
 /// See also [transitRoutes].
 @ProviderFor(transitRoutes)

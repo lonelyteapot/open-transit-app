@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'settings.dart';
+import 'settings_model.dart';
 
 @immutable
 class SettingsRepository {
@@ -15,12 +15,16 @@ class SettingsRepository {
     final showDebugInfo = prefs.getBool('showDebugInfo') ?? false;
     final useCancellableTileProvider =
         prefs.getBool('useCancellableTileProvider') ?? true;
+    final useMockData = prefs.getBool('useMockData') ?? false;
+    final graphqlEndpointUrl = prefs.getString('graphqlEndpointUrl') ?? '';
     return SettingsData(
       themeMode: ThemeMode.values.firstWhere(
         (element) => element.name == themeMode,
       ),
       showDebugInfo: showDebugInfo,
       useCancellableTileProvider: useCancellableTileProvider,
+      useMockData: useMockData,
+      graphqlEndpointUrl: graphqlEndpointUrl,
     );
   }
 
@@ -33,6 +37,8 @@ class SettingsRepository {
         'useCancellableTileProvider',
         settings.useCancellableTileProvider,
       ),
+      prefs.setBool('useMockData', settings.useMockData),
+      prefs.setString('graphqlEndpointUrl', settings.graphqlEndpointUrl),
     ]);
   }
 }

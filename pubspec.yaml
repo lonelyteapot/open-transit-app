@@ -16,6 +16,7 @@ dependencies:
   flutter_riverpod: ^2.4.0
   freezed_annotation: ^2.4.1
   go_router: ^11.0.0
+  graphql: ^5.2.0-beta.6
   latlong2: ^0.9.0
   logger: ^2.0.2
   package_info_plus: ^4.0.0

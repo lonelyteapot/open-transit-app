@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'settings.dart';
+part of 'settings_model.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -19,6 +19,8 @@ mixin _$SettingsData {
   ThemeMode get themeMode => throw _privateConstructorUsedError;
   bool get showDebugInfo => throw _privateConstructorUsedError;
   bool get useCancellableTileProvider => throw _privateConstructorUsedError;
+  bool get useMockData => throw _privateConstructorUsedError;
+  String get graphqlEndpointUrl => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $SettingsDataCopyWith<SettingsData> get copyWith =>
@@ -34,7 +36,9 @@ abstract class $SettingsDataCopyWith<$Res> {
   $Res call(
       {ThemeMode themeMode,
       bool showDebugInfo,
-      bool useCancellableTileProvider});
+      bool useCancellableTileProvider,
+      bool useMockData,
+      String graphqlEndpointUrl});
 }
 
 /// @nodoc
@@ -53,6 +57,8 @@ class _$SettingsDataCopyWithImpl<$Res, $Val extends SettingsData>
     Object? themeMode = null,
     Object? showDebugInfo = null,
     Object? useCancellableTileProvider = null,
+    Object? useMockData = null,
+    Object? graphqlEndpointUrl = null,
   }) {
     return _then(_value.copyWith(
       themeMode: null == themeMode
@@ -67,6 +73,14 @@ class _$SettingsDataCopyWithImpl<$Res, $Val extends SettingsData>
           ? _value.useCancellableTileProvider
           : useCancellableTileProvider // ignore: cast_nullable_to_non_nullable
               as bool,
+      useMockData: null == useMockData
+          ? _value.useMockData
+          : useMockData // ignore: cast_nullable_to_non_nullable
+              as bool,
+      graphqlEndpointUrl: null == graphqlEndpointUrl
+          ? _value.graphqlEndpointUrl
+          : graphqlEndpointUrl // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -82,7 +96,9 @@ abstract class _$$SettingsDataImplCopyWith<$Res>
   $Res call(
       {ThemeMode themeMode,
       bool showDebugInfo,
-      bool useCancellableTileProvider});
+      bool useCancellableTileProvider,
+      bool useMockData,
+      String graphqlEndpointUrl});
 }
 
 /// @nodoc
@@ -99,6 +115,8 @@ class __$$SettingsDataImplCopyWithImpl<$Res>
     Object? themeMode = null,
     Object? showDebugInfo = null,
     Object? useCancellableTileProvider = null,
+    Object? useMockData = null,
+    Object? graphqlEndpointUrl = null,
   }) {
     return _then(_$SettingsDataImpl(
       themeMode: null == themeMode
@@ -113,6 +131,14 @@ class __$$SettingsDataImplCopyWithImpl<$Res>
           ? _value.useCancellableTileProvider
           : useCancellableTileProvider // ignore: cast_nullable_to_non_nullable
               as bool,
+      useMockData: null == useMockData
+          ? _value.useMockData
+          : useMockData // ignore: cast_nullable_to_non_nullable
+              as bool,
+      graphqlEndpointUrl: null == graphqlEndpointUrl
+          ? _value.graphqlEndpointUrl
+          : graphqlEndpointUrl // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -123,7 +149,9 @@ class _$SettingsDataImpl implements _SettingsData {
   const _$SettingsDataImpl(
       {required this.themeMode,
       required this.showDebugInfo,
-      required this.useCancellableTileProvider});
+      required this.useCancellableTileProvider,
+      required this.useMockData,
+      required this.graphqlEndpointUrl});
 
   @override
   final ThemeMode themeMode;
@@ -131,10 +159,14 @@ class _$SettingsDataImpl implements _SettingsData {
   final bool showDebugInfo;
   @override
   final bool useCancellableTileProvider;
+  @override
+  final bool useMockData;
+  @override
+  final String graphqlEndpointUrl;
 
   @override
   String toString() {
-    return 'SettingsData(themeMode: $themeMode, showDebugInfo: $showDebugInfo, useCancellableTileProvider: $useCancellableTileProvider)';
+    return 'SettingsData(themeMode: $themeMode, showDebugInfo: $showDebugInfo, useCancellableTileProvider: $useCancellableTileProvider, useMockData: $useMockData, graphqlEndpointUrl: $graphqlEndpointUrl)';
   }
 
   @override
@@ -149,12 +181,16 @@ class _$SettingsDataImpl implements _SettingsData {
             (identical(other.useCancellableTileProvider,
                     useCancellableTileProvider) ||
                 other.useCancellableTileProvider ==
-                    useCancellableTileProvider));
+                    useCancellableTileProvider) &&
+            (identical(other.useMockData, useMockData) ||
+                other.useMockData == useMockData) &&
+            (identical(other.graphqlEndpointUrl, graphqlEndpointUrl) ||
+                other.graphqlEndpointUrl == graphqlEndpointUrl));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, themeMode, showDebugInfo, useCancellableTileProvider);
+  int get hashCode => Object.hash(runtimeType, themeMode, showDebugInfo,
+      useCancellableTileProvider, useMockData, graphqlEndpointUrl);
 
   @JsonKey(ignore: true)
   @override
@@ -167,7 +203,9 @@ abstract class _SettingsData implements SettingsData {
   const factory _SettingsData(
       {required final ThemeMode themeMode,
       required final bool showDebugInfo,
-      required final bool useCancellableTileProvider}) = _$SettingsDataImpl;
+      required final bool useCancellableTileProvider,
+      required final bool useMockData,
+      required final String graphqlEndpointUrl}) = _$SettingsDataImpl;
 
   @override
   ThemeMode get themeMode;
@@ -175,6 +213,10 @@ abstract class _SettingsData implements SettingsData {
   bool get showDebugInfo;
   @override
   bool get useCancellableTileProvider;
+  @override
+  bool get useMockData;
+  @override
+  String get graphqlEndpointUrl;
   @override
   @JsonKey(ignore: true)
   _$$SettingsDataImplCopyWith<_$SettingsDataImpl> get copyWith =>

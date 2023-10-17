@@ -7,10 +7,9 @@ class MockTransitRouteRepository implements TransitRouteRepository {
   const MockTransitRouteRepository();
 
   @override
-  String get networkId => throw UnimplementedError();
-
-  @override
-  FutureOr<List<TransitRoute>> getAllRoutes() async {
+  FutureOr<List<TransitRoute>> getAllRoutesForNetwork(
+    final String networkId,
+  ) async {
     await Future.delayed(const Duration(seconds: 2));
     return [
       const TransitRoute(

@@ -7,7 +7,7 @@ part of 'network_provider.dart';
 // **************************************************************************
 
 String _$transitNetworkRepositoryHash() =>
-    r'e193f2ad577522e3e81140238cfdb38f2ad5ff16';
+    r'eaab30d28a440c60cc8858854c597d64c49ab685';
 
 /// See also [transitNetworkRepository].
 @ProviderFor(transitNetworkRepository)
@@ -24,7 +24,7 @@ final transitNetworkRepositoryProvider =
 
 typedef TransitNetworkRepositoryRef
     = AutoDisposeProviderRef<TransitNetworkRepository>;
-String _$transitNetworksHash() => r'fe02f807ec1e5dffae3df480161e7d31ba9a4db6';
+String _$transitNetworksHash() => r'3413087bd6ce0d522eadb4f0e3066373c2089b78';
 
 /// See also [TransitNetworks].
 @ProviderFor(TransitNetworks)

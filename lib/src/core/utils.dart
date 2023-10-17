@@ -11,3 +11,7 @@ extension StringExtension on String {
     return isEmpty ? '' : '${this[0].toUpperCase()}${substring(1)}';
   }
 }
+
+extension IterableExtension<E> on Iterable<E> {
+  List<T> mapToList<T>(T Function(E e) toElement) => map(toElement).toList();
+}

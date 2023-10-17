@@ -73,12 +73,15 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
     });
   }
 
-  void moveTo(LatLng latLng, {required double zoom}) {
-    logger.d('Moving to $latLng at zoom $zoom');
-    final result = _mapController.move(latLng, zoom);
-    if (result == false) {
+  void moveTo(LatLng center, {required double zoom}) {
+    final fCenter = _formatLatLng(center);
+    logger.d('Moving to $fCenter at zoom $zoom');
+    _mapController.move(center, zoom);
+    final resultCenter = _mapController.camera.center;
+    if (resultCenter != center) {
       // TODO: Error handling
-      _showErrorSnackBar(context, 'Failed to move the map');
+      final fResultCenter = _formatLatLng(resultCenter);
+      logger.e('Failed to move the map to $fCenter, now at $fResultCenter');
     }
   }
 
@@ -117,6 +120,13 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
           cursorKeyboardRotationOptions:
               CursorKeyboardRotationOptions.disabled(),
         ),
+        onMapReady: () {
+          // Move the map to its initial position to avoid bounds issues
+          _mapController.move(
+            LatLng(kWorldCenterLat.toDouble(), kWorldCenterLon.toDouble()),
+            kWorldCenterZoom,
+          );
+        },
       ),
       mapController: _mapController,
       children: [
@@ -197,4 +207,8 @@ void _showErrorSnackBar(BuildContext context, String text) {
       duration: const Duration(minutes: 1),
     ),
   );
+}
+
+String _formatLatLng(LatLng latLng) {
+  return '(${latLng.latitude.toStringAsFixed(6)}, ${latLng.longitude.toStringAsFixed(6)})';
 }

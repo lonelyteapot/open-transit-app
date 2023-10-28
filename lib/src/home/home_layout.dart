@@ -6,10 +6,10 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../core/providers.dart';
 import '../core/utils.dart';
+import '../map/map_widget.dart';
 import '../transit_network_selector/selected_network_provider.dart';
 import '../transit_network_selector/selector_widget.dart';
 import 'drawer_widget.dart';
-import 'map_widget.dart';
 
 const double kSidebarWidth = 400;
 

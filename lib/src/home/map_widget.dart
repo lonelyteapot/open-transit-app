@@ -22,6 +22,8 @@ final Decimal kWorldCenterLat = Decimal.fromInt(25);
 final Decimal kWorldCenterLon = Decimal.fromInt(46);
 const double kWorldCenterZoom = 2.0;
 const double kDefaultZoom = 12.0;
+final LatLngBounds kWorldBounds =
+    LatLngBounds(const LatLng(-90, -180), const LatLng(90, 180));
 
 String _buildMapboxUrl({required String styleId, required String accessToken}) {
   return 'https://api.mapbox.com/styles/v1/lonelyteapot/$styleId/tiles/256/{z}/{x}/{y}{r}?access_token=$accessToken';
@@ -113,6 +115,11 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
         initialZoom: kWorldCenterZoom,
         minZoom: 2,
         maxZoom: 18,
+        // Unhotfix for https://github.com/fleaflet/flutter_map/pull/1700
+        // that constraints the camera.
+        // This isn't much of an issue now because rotation is disabled.
+        // TODO: Remove when the issue is fixed.
+        cameraConstraint: CameraConstraint.contain(bounds: kWorldBounds),
         backgroundColor:
             Theme.of(context).isDark ? const Color(0xFF292929) : Colors.white,
         interactionOptions: InteractionOptions(

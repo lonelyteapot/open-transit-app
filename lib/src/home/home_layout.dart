@@ -269,13 +269,15 @@ class _OrientedLayout extends ConsumerWidget {
                 children: [
                   if (body != null) body!,
                   if (dialog != null)
-                    Theme(
-                      data: Theme.of(context).copyWith(
-                        dialogTheme: const DialogTheme(
-                          alignment: Alignment.topCenter,
+                    SafeArea(
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          dialogTheme: const DialogTheme(
+                            alignment: Alignment.topCenter,
+                          ),
                         ),
+                        child: dialog!,
                       ),
-                      child: dialog!,
                     ),
                 ],
               ),

@@ -38,6 +38,47 @@ class DrawerContent extends ConsumerWidget {
         if (apkDownloadUrl != null)
           _AndroidAppDownloadLink(url: apkDownloadUrl),
         const Spacer(),
+        Text(
+          'Developer Settings',
+          style: Theme.of(context).textTheme.titleMedium,
+          textAlign: TextAlign.center,
+        ),
+        SwitchListTile(
+          title: const Text('Use mock data'),
+          value: ref.watch(settingsProvider).useMockData,
+          onChanged: (value) {
+            final settingsNotifier = ref.read(settingsProvider.notifier);
+            settingsNotifier.modifyAndSave(
+              (oldSettings) => oldSettings.copyWith(useMockData: value),
+            );
+          },
+        ),
+        SwitchListTile(
+          title: const Text('Show debugging info'),
+          value: ref.watch(settingsProvider).showDebugInfo,
+          onChanged: (value) {
+            final settingsNotifier = ref.read(settingsProvider.notifier);
+            settingsNotifier.modifyAndSave(
+              (oldSettings) => oldSettings.copyWith(showDebugInfo: value),
+            );
+          },
+        ),
+        SwitchListTile(
+          title: const Text('Cancel map requests'),
+          value: ref.watch(settingsProvider).useCancellableTileProvider,
+          onChanged: (value) {
+            final settingsNotifier = ref.read(settingsProvider.notifier);
+            settingsNotifier.modifyAndSave(
+              (oldSettings) => oldSettings.copyWith(
+                useCancellableTileProvider: value,
+              ),
+            );
+            _showSnackBar(
+              context,
+              'Move the map to unload old tiles for changes to take effect',
+            );
+          },
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: TextField(
@@ -59,43 +100,7 @@ class DrawerContent extends ConsumerWidget {
             },
           ),
         ),
-        SwitchListTile(
-          title: const Text('Use mock data'),
-          value: ref.watch(settingsProvider).useMockData,
-          onChanged: (value) {
-            final settingsNotifier = ref.read(settingsProvider.notifier);
-            settingsNotifier.modifyAndSave(
-              (oldSettings) => oldSettings.copyWith(useMockData: value),
-            );
-          },
-        ),
-        SwitchListTile(
-          title: const Text('Cancel map requests'),
-          value: ref.watch(settingsProvider).useCancellableTileProvider,
-          onChanged: (value) {
-            final settingsNotifier = ref.read(settingsProvider.notifier);
-            settingsNotifier.modifyAndSave(
-              (oldSettings) => oldSettings.copyWith(
-                useCancellableTileProvider: value,
-              ),
-            );
-            _showSnackBar(
-              context,
-              'Move the map to unload old tiles for changes to take effect',
-            );
-          },
-        ),
-        SwitchListTile(
-          title: const Text('Show debugging info'),
-          value: ref.watch(settingsProvider).showDebugInfo,
-          onChanged: (value) {
-            final settingsNotifier = ref.read(settingsProvider.notifier);
-            settingsNotifier.modifyAndSave(
-              (oldSettings) => oldSettings.copyWith(showDebugInfo: value),
-            );
-          },
-        ),
-        const SizedBox(height: 8),
+        const Spacer(),
         const _ThemeSelector(),
         const _AppInfo(),
       ],
@@ -151,9 +156,10 @@ class _AndroidAppDownloadLink extends StatelessWidget {
 
   Widget? _buildSubtitle() {
     if (defaultTargetPlatform == TargetPlatform.android) {
-      return const Text('for smoother experience');
+      return const Text('to have smoother experience');
+    } else {
+      return const Text('to monitor on the go');
     }
-    return const Text('to monitor on the go');
   }
 
   @override
@@ -163,7 +169,7 @@ class _AndroidAppDownloadLink extends StatelessWidget {
       target: LinkTarget.self,
       builder: (context, followLink) {
         return ListTile(
-          title: const Text('Download Android app'),
+          title: const Text('Download app for Android'),
           subtitle: _buildSubtitle(),
           leading: const Icon(Icons.system_update),
           onTap: followLink,
@@ -196,15 +202,6 @@ class _ThemeSelector extends ConsumerWidget {
         ),
         segments: [
           ButtonSegment(
-            value: ThemeMode.light,
-            icon: Icon(
-              themeMode == ThemeMode.light
-                  ? Icons.light_mode
-                  : Icons.light_mode_outlined,
-            ),
-            tooltip: 'Switch to light theme',
-          ),
-          ButtonSegment(
             value: ThemeMode.system,
             icon: Icon(
               themeMode == ThemeMode.system
@@ -212,6 +209,15 @@ class _ThemeSelector extends ConsumerWidget {
                   : Icons.brightness_auto_outlined,
             ),
             tooltip: 'Switch to system-defined theme',
+          ),
+          ButtonSegment(
+            value: ThemeMode.light,
+            icon: Icon(
+              themeMode == ThemeMode.light
+                  ? Icons.light_mode
+                  : Icons.light_mode_outlined,
+            ),
+            tooltip: 'Switch to light theme',
           ),
           ButtonSegment(
             value: ThemeMode.dark,

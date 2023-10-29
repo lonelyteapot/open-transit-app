@@ -1,6 +1,3 @@
-import 'dart:async';
-
-import 'package:decimal/decimal.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -9,21 +6,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../core/constants.dart';
-import '../core/logging.dart';
 import '../core/utils.dart';
+import '../settings/settings_model.dart';
 import '../settings/settings_provider.dart';
 import '../transit_network_selector/selected_network_provider.dart';
+import '../transit_networks/network_model.dart';
+import 'ot_map_controller.dart';
+import 'ot_map_controller_provider.dart';
 
 const String _mapboxLightStyleId = 'cllhswcs9018i01qs99zdd7n6';
 const String _mapboxDarkStyleId = 'clmb10kfe01ac01pfdic1deec';
 const String _mapboxAccessToken = String.fromEnvironment('MAPBOX_ACCESS_TOKEN');
 
-final Decimal kWorldCenterLat = Decimal.fromInt(25);
-final Decimal kWorldCenterLon = Decimal.fromInt(46);
-const double kWorldCenterZoom = 2.0;
 const double kDefaultZoom = 12.0;
-final LatLngBounds kWorldBounds =
-    LatLngBounds(const LatLng(-90, -180), const LatLng(90, 180));
+const double kInitialZoom = 3.0;
 
 String _buildMapboxUrl({required String styleId, required String accessToken}) {
   return 'https://api.mapbox.com/styles/v1/lonelyteapot/$styleId/tiles/256/{z}/{x}/{y}{r}?access_token=$accessToken';
@@ -37,22 +33,15 @@ class CustomMapWidget extends ConsumerStatefulWidget {
 }
 
 class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
-  late final MapController _mapController;
-  late final StreamController<void> _tileLayerResetController;
   bool? wasDarkMode;
+
+  late final OtMapController mapController;
 
   @override
   void initState() {
     assert(_mapboxAccessToken.isNotEmpty);
     super.initState();
-    _mapController = MapController();
-    _tileLayerResetController = StreamController();
-  }
-
-  @override
-  void dispose() {
-    _mapController.dispose();
-    super.dispose();
+    mapController = ref.read(otMapControllerProvider);
   }
 
   @override
@@ -61,58 +50,74 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
     final isDarkMode = Theme.of(context).isDark;
     if (wasDarkMode != isDarkMode) {
       if (wasDarkMode != null) {
-        resetTileLayer();
+        mapController.resetTiles();
       }
       wasDarkMode = isDarkMode;
     }
   }
 
-  void resetTileLayer() {
-    _tileLayerResetController.add(null);
-    // Prevents instability
+  void _handleMapReady() {
+    // Schedule for next tick for stability
     Future.delayed(Duration.zero, () {
-      setState(() {});
+      // Try to avoid bounding issues
+      mapController.teleportCameraToDefault();
     });
   }
 
-  void moveTo(LatLng center, {required double zoom}) {
-    final fCenter = _formatLatLng(center);
-    logger.d('Moving to $fCenter at zoom $zoom');
-    _mapController.move(center, zoom);
-    final resultCenter = _mapController.camera.center;
-    if (resultCenter != center) {
-      // TODO: Error handling
-      final fResultCenter = _formatLatLng(resultCenter);
-      logger.e('Failed to move the map to $fCenter, now at $fResultCenter');
+  void _handleTileError(TileImage tile, Object error, StackTrace? stackTrace) {
+    final pos = tile.coordinates;
+    final errmsg = error is DioException ? error.message : error.toString();
+    _showErrorSnackBar(
+      context,
+      'Failed to load map tile at (${pos.x}, ${pos.y}, ${pos.z}): $errmsg',
+    );
+  }
+
+  void _handleSelectedTransitNetworkChange(
+    AsyncValue<TransitNetwork?>? prev,
+    AsyncValue<TransitNetwork?> next,
+  ) {
+    if (prev == null) {
+      return;
+    }
+    if (!(prev.hasValue && next.hasValue)) {
+      return;
+    }
+    if (prev.value != next.value) {
+      var nextCenterLat = next.valueOrNull?.centerLat;
+      var nextCenterLon = next.valueOrNull?.centerLon;
+      double? nextZoom = kDefaultZoom;
+      if (nextCenterLat == null || nextCenterLon == null) {
+        mapController.teleportCameraToDefault();
+      } else {
+        mapController.teleportCamera(
+          LatLng(nextCenterLat.toDouble(), nextCenterLon.toDouble()),
+          zoom: nextZoom,
+        );
+      }
+    }
+  }
+
+  void _handleSettingsChange(SettingsData? prev, SettingsData next) {
+    if (prev == null) {
+      return;
+    }
+    if (prev.themeMode != next.themeMode) {
+      mapController.resetTiles();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(selectedTransitNetworkProvider, (prev, next) {
-      if (prev == null || !prev.hasValue || !next.hasValue) {
-        return;
-      }
-      if (prev.value != next.value) {
-        var nextCenterLat = next.valueOrNull?.centerLat;
-        var nextCenterLon = next.valueOrNull?.centerLon;
-        double? nextZoom = kDefaultZoom;
-        if (nextCenterLat == null || nextCenterLon == null) {
-          nextCenterLat = kWorldCenterLat;
-          nextCenterLon = kWorldCenterLon;
-          nextZoom = kWorldCenterZoom;
-        }
-        moveTo(
-          LatLng(nextCenterLat.toDouble(), nextCenterLon.toDouble()),
-          zoom: nextZoom,
-        );
-      }
-    });
+    ref.listen(
+      selectedTransitNetworkProvider,
+      _handleSelectedTransitNetworkChange,
+    );
+    ref.listen(settingsProvider, _handleSettingsChange);
     return FlutterMap(
       options: MapOptions(
-        initialCenter:
-            LatLng(kWorldCenterLat.toDouble(), kWorldCenterLon.toDouble()),
-        initialZoom: kWorldCenterZoom,
+        initialCenter: kWorldBounds.center,
+        initialZoom: kInitialZoom,
         minZoom: 2,
         maxZoom: 18,
         // Unhotfix for https://github.com/fleaflet/flutter_map/pull/1700
@@ -127,15 +132,9 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
           cursorKeyboardRotationOptions:
               CursorKeyboardRotationOptions.disabled(),
         ),
-        onMapReady: () {
-          // Move the map to its initial position to avoid bounds issues
-          _mapController.move(
-            LatLng(kWorldCenterLat.toDouble(), kWorldCenterLon.toDouble()),
-            kWorldCenterZoom,
-          );
-        },
+        onMapReady: _handleMapReady,
       ),
-      mapController: _mapController,
+      mapController: mapController.impl,
       children: [
         TileLayer(
           tileProvider: ref.watch(settingsProvider).useCancellableTileProvider
@@ -150,16 +149,8 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
           userAgentPackageName: kUserAgentPackageName,
           maxZoom: 18,
           retinaMode: true,
-          reset: _tileLayerResetController.stream,
-          errorTileCallback: (tile, error, stackTrace) {
-            final c = tile.coordinates;
-            final errmsg =
-                error is DioException ? error.message : error.toString();
-            _showErrorSnackBar(
-              context,
-              'Failed to load a map tile at (${c.x}, ${c.y}, ${c.z}): $errmsg',
-            );
-          },
+          reset: mapController.tileLayerResetControllerImpl.stream,
+          errorTileCallback: _handleTileError,
         ),
         // TODO: Add attributions
         // https://docs.mapbox.com/help/getting-started/attribution/
@@ -177,7 +168,7 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
       child: Align(
         alignment: Alignment.topCenter,
         child: StreamBuilder(
-          stream: _mapController.mapEventStream,
+          stream: mapController.impl.mapEventStream,
           builder: (context, snapshot) {
             final zoom = snapshot.data?.camera.zoom;
             final center = snapshot.data?.camera.center;
@@ -214,8 +205,4 @@ void _showErrorSnackBar(BuildContext context, String text) {
       duration: const Duration(minutes: 1),
     ),
   );
-}
-
-String _formatLatLng(LatLng latLng) {
-  return '(${latLng.latitude.toStringAsFixed(6)}, ${latLng.longitude.toStringAsFixed(6)})';
 }

@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Define the URL of the APK file
-APK_URL="https://lonelyteapot.github.io/open-transit-app/open-transit-app.apk"
+APK_URL="https://lonelyteapot.github.io/open-transit-app/open-transit.apk"
 
 # Define the local filename for the APK
-APK_FILE="/tmp/open-transit-app.apk"
+APK_FILE="/tmp/open-transit.apk"
 
 # Download the APK file
 echo "Downloading $APK_URL"

@@ -17,7 +17,7 @@ part 'drawer_widget.g.dart';
 @riverpod
 Uri? apkDownloadUrl(ApkDownloadUrlRef ref) {
   // Non-null only on Web
-  return WebUtils.instance?.getBaseUrl()?.resolve('open-transit-app.apk');
+  return WebUtils.instance?.getBaseUrl()?.resolve('open-transit.apk');
 }
 
 @Riverpod(keepAlive: true)

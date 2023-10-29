@@ -13,59 +13,80 @@ import 'drawer_widget.dart';
 
 const double kSidebarWidth = 400;
 
-class MainScaffold extends ConsumerWidget {
-  const MainScaffold({
+final mapKey = GlobalKey(debugLabel: 'mainMap');
+
+class RegularPageWrapper extends StatelessWidget {
+  const RegularPageWrapper({
     super.key,
     required this.body,
   });
 
-  static final mapKey = GlobalKey(debugLabel: 'mainMap');
+  final Widget body;
 
+  Widget _buildWithConstraints(
+    BuildContext context,
+    BoxConstraints constraints,
+  ) {
+    final orientation = constraints.maxWidth > 2 * kSidebarWidth
+        ? Orientation.landscape
+        : Orientation.portrait;
+    return RegularPageScaffold(orientation: orientation, body: body);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: _buildWithConstraints,
+    );
+  }
+}
+
+class RegularPageScaffold extends StatelessWidget {
+  const RegularPageScaffold({
+    super.key,
+    required this.orientation,
+    required this.body,
+  });
+
+  final Orientation orientation;
   final Widget body;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final shouldShowBackButton =
         GoRouter.of(context).routerDelegate.currentConfiguration.fullPath !=
             '/';
     final map = CustomMapWidget(key: mapKey);
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final orientation = constraints.maxWidth > 2 * kSidebarWidth
-            ? Orientation.landscape
-            : Orientation.portrait;
-        return Scaffold(
-          extendBodyBehindAppBar: true,
-          appBar: AppBar(
-            centerTitle: orientation == Orientation.portrait,
-            forceMaterialTransparency: true,
-            backgroundColor: Colors.transparent,
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: Colors.transparent,
-              statusBarIconBrightness:
-                  Theme.of(context).isDark ? Brightness.light : Brightness.dark,
-            ),
-            leading: shouldShowBackButton
-                ? BackButton(onPressed: context.pop)
-                : null,
-          ),
-          drawerScrimColor: Colors.black38,
-          endDrawerEnableOpenDragGesture: false,
-          endDrawer: const Drawer(
-            elevation: 0.5,
-            child: SafeArea(
-              child: DrawerContent(),
-            ),
-          ),
-          body: _BodyWrapper(
-            child: _OrientedLayout(
-              orientation: orientation,
-              map: map,
-              child: body,
-            ),
-          ),
-        );
-      },
+    var body = this.body;
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        centerTitle: orientation == Orientation.portrait,
+        forceMaterialTransparency: true,
+        backgroundColor: Colors.transparent,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness:
+              Theme.of(context).isDark ? Brightness.light : Brightness.dark,
+        ),
+        leading:
+            shouldShowBackButton ? BackButton(onPressed: context.pop) : null,
+      ),
+      drawerScrimColor: Colors.black38,
+      endDrawerEnableOpenDragGesture: false,
+      endDrawer: const Drawer(
+        elevation: 0.5,
+        child: SafeArea(
+          child: DrawerContent(),
+        ),
+      ),
+      body: _BodyWrapper(
+        child: _OrientedLayout(
+          orientation: orientation,
+          map: map,
+          child: body,
+        ),
+      ),
     );
   }
 }

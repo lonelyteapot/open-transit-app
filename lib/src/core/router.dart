@@ -15,7 +15,7 @@ final router = GoRouter(
   routes: [
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
-      builder: (context, state, child) => MainScaffold(body: child),
+      builder: (context, state, child) => RegularPageWrapper(body: child),
       routes: [
         GoRoute(
           path: '/',

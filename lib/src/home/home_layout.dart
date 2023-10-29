@@ -19,7 +19,7 @@ class MainScaffold extends ConsumerWidget {
     required this.body,
   });
 
-  static final mapKey = GlobalKey(debugLabel: 'mainCustomMap');
+  static final mapKey = GlobalKey(debugLabel: 'mainMap');
 
   final Widget body;
 
@@ -28,13 +28,16 @@ class MainScaffold extends ConsumerWidget {
     final shouldShowBackButton =
         GoRouter.of(context).routerDelegate.currentConfiguration.fullPath !=
             '/';
+    final map = CustomMapWidget(key: mapKey);
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isLandscape = constraints.maxWidth > 2 * kSidebarWidth;
+        final orientation = constraints.maxWidth > 2 * kSidebarWidth
+            ? Orientation.landscape
+            : Orientation.portrait;
         return Scaffold(
           extendBodyBehindAppBar: true,
           appBar: AppBar(
-            centerTitle: !isLandscape,
+            centerTitle: orientation == Orientation.portrait,
             forceMaterialTransparency: true,
             backgroundColor: Colors.transparent,
             systemOverlayStyle: SystemUiOverlayStyle(
@@ -55,9 +58,11 @@ class MainScaffold extends ConsumerWidget {
             ),
           ),
           body: _BodyWrapper(
-            child: isLandscape
-                ? _LandscapeLayout(mapKey: mapKey, child: body)
-                : _PortraitLayout(mapKey: mapKey, child: body),
+            child: _OrientedLayout(
+              orientation: orientation,
+              map: map,
+              child: body,
+            ),
           ),
         );
       },
@@ -86,19 +91,30 @@ class _BodyWrapper extends ConsumerWidget {
   }
 }
 
-class _PortraitLayout extends StatelessWidget {
-  const _PortraitLayout({
+class _OrientedLayout extends ConsumerWidget {
+  const _OrientedLayout({
     // ignore: unused_element
     super.key,
-    required this.mapKey,
+    required this.orientation,
+    required this.map,
     required this.child,
   });
 
-  final Key mapKey;
+  final Orientation orientation;
+  final Widget map;
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    switch (orientation) {
+      case Orientation.portrait:
+        return _buildPortrait(context);
+      case Orientation.landscape:
+        return _buildLandscape(context, ref);
+    }
+  }
+
+  Widget _buildPortrait(BuildContext context) {
     final maxPanelHeight =
         MediaQuery.sizeOf(context).height - MediaQuery.paddingOf(context).top;
     const borderRadius = BorderRadius.vertical(
@@ -114,7 +130,7 @@ class _PortraitLayout extends StatelessWidget {
           final wrappedSelectedNetwork =
               ref.watch(selectedTransitNetworkProvider);
           if (wrappedSelectedNetwork.valueOrNull == null) {
-            return CustomMapWidget(key: mapKey);
+            return map;
           }
           return SlidingUpPanel(
             minHeight: 160,
@@ -170,31 +186,18 @@ class _PortraitLayout extends StatelessWidget {
                 ),
               );
             },
-            body: CustomMapWidget(key: mapKey),
+            body: map,
           );
         },
       ),
     );
   }
-}
 
-class _LandscapeLayout extends ConsumerWidget {
-  const _LandscapeLayout({
-    // ignore: unused_element
-    super.key,
-    required this.mapKey,
-    required this.child,
-  });
-
-  final Key mapKey;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget _buildLandscape(BuildContext context, WidgetRef ref) {
     // TODO: Solve this navigation hell somehow
     final wrappedSelectedNetwork = ref.watch(selectedTransitNetworkProvider);
     if (wrappedSelectedNetwork.valueOrNull == null) {
-      return CustomMapWidget(key: mapKey);
+      return map;
     }
     return Stack(
       fit: StackFit.expand,
@@ -204,7 +207,7 @@ class _LandscapeLayout extends ConsumerWidget {
           bottom: 0,
           left: kSidebarWidth,
           right: 0,
-          child: CustomMapWidget(key: mapKey),
+          child: map,
         ),
         Positioned(
           top: 0,

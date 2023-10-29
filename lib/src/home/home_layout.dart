@@ -80,12 +80,22 @@ class RegularPageScaffold extends ConsumerWidget {
         leading:
             shouldShowBackButton ? BackButton(onPressed: context.pop) : null,
       ),
-      drawerScrimColor: Colors.black38,
+      drawerScrimColor: Colors.black12,
       endDrawerEnableOpenDragGesture: false,
-      endDrawer: const Drawer(
-        elevation: 0.5,
-        child: SafeArea(
-          child: DrawerContent(),
+      endDrawer: DecoratedBox(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+              blurRadius: 8,
+            ),
+          ],
+        ),
+        child: const Drawer(
+          elevation: 0,
+          child: SafeArea(
+            child: DrawerContent(),
+          ),
         ),
       ),
       body: _OrientedLayout(
@@ -236,7 +246,7 @@ class _OrientedLayout extends ConsumerWidget {
           width: kSidebarWidth,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
+              color: Theme.of(context).colorScheme.background,
               boxShadow: [
                 BoxShadow(
                   color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),

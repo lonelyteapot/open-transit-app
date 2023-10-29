@@ -23,7 +23,6 @@ class LocationSwitcher extends ConsumerWidget {
 
     return AlertDialog(
       title: const Text('Choose your location'),
-      alignment: Alignment.center,
       elevation: 8,
       content: DropdownMenu<String?>(
         enabled: wrappedNetworks.hasValue,

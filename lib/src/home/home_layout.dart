@@ -41,7 +41,7 @@ class RegularPageWrapper extends StatelessWidget {
   }
 }
 
-class RegularPageScaffold extends StatelessWidget {
+class RegularPageScaffold extends ConsumerWidget {
   const RegularPageScaffold({
     super.key,
     required this.orientation,
@@ -51,13 +51,21 @@ class RegularPageScaffold extends StatelessWidget {
   final Orientation orientation;
   final Widget body;
 
+  Widget? _buildDialog(BuildContext context, WidgetRef ref) {
+    final wrappedSelectedNetwork = ref.watch(selectedTransitNetworkProvider);
+    if (wrappedSelectedNetwork.valueOrNull == null) {
+      return LocationSwitcher();
+    }
+    return null;
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final shouldShowBackButton =
         GoRouter.of(context).routerDelegate.currentConfiguration.fullPath !=
             '/';
     final map = CustomMapWidget(key: mapKey);
-    var body = this.body;
+    final dialog = _buildDialog(context, ref);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -80,35 +88,13 @@ class RegularPageScaffold extends StatelessWidget {
           child: DrawerContent(),
         ),
       ),
-      body: _BodyWrapper(
-        child: _OrientedLayout(
-          orientation: orientation,
-          map: map,
-          child: body,
-        ),
+      body: _OrientedLayout(
+        orientation: orientation,
+        map: map,
+        body: dialog == null ? body : null,
+        dialog: dialog,
       ),
     );
-  }
-}
-
-class _BodyWrapper extends ConsumerWidget {
-  const _BodyWrapper({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final wrappedSelectedNetwork = ref.watch(selectedTransitNetworkProvider);
-    if (wrappedSelectedNetwork.valueOrNull == null) {
-      // TODO: Solve this navigation hell somehow
-      return Stack(
-        children: [
-          child,
-          LocationSwitcher(),
-        ],
-      );
-    }
-    return child;
   }
 }
 
@@ -118,21 +104,42 @@ class _OrientedLayout extends ConsumerWidget {
     super.key,
     required this.orientation,
     required this.map,
-    required this.child,
+    this.body,
+    this.dialog,
   });
 
   final Orientation orientation;
   final Widget map;
-  final Widget child;
+  final Widget? body;
+  final Widget? dialog;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     switch (orientation) {
       case Orientation.portrait:
-        return _buildPortrait(context);
+        return _buildPortraitWrapper(context);
       case Orientation.landscape:
         return _buildLandscape(context, ref);
     }
+  }
+
+  Widget _buildPortraitWrapper(BuildContext context) {
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.center,
+      children: [
+        _buildPortrait(context),
+        if (dialog != null)
+          Theme(
+            data: Theme.of(context).copyWith(
+              dialogTheme: const DialogTheme(
+                alignment: Alignment.center,
+              ),
+            ),
+            child: dialog!,
+          ),
+      ],
+    );
   }
 
   Widget _buildPortrait(BuildContext context) {
@@ -147,10 +154,7 @@ class _OrientedLayout extends ConsumerWidget {
       ],
       child: Consumer(
         builder: (context, ref, _) {
-          // TODO: Solve this navigation hell somehow
-          final wrappedSelectedNetwork =
-              ref.watch(selectedTransitNetworkProvider);
-          if (wrappedSelectedNetwork.valueOrNull == null) {
+          if (body == null) {
             return map;
           }
           return SlidingUpPanel(
@@ -194,7 +198,7 @@ class _OrientedLayout extends ConsumerWidget {
                                 ),
                               ),
                             ),
-                            child: child,
+                            child: body!,
                           ),
                         ),
                         const Positioned(
@@ -215,11 +219,6 @@ class _OrientedLayout extends ConsumerWidget {
   }
 
   Widget _buildLandscape(BuildContext context, WidgetRef ref) {
-    // TODO: Solve this navigation hell somehow
-    final wrappedSelectedNetwork = ref.watch(selectedTransitNetworkProvider);
-    if (wrappedSelectedNetwork.valueOrNull == null) {
-      return map;
-    }
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -254,7 +253,22 @@ class _OrientedLayout extends ConsumerWidget {
                   ),
                 ),
               ),
-              child: child,
+              child: Stack(
+                alignment: Alignment.topCenter,
+                clipBehavior: Clip.none,
+                children: [
+                  if (body != null) body!,
+                  if (dialog != null)
+                    Theme(
+                      data: Theme.of(context).copyWith(
+                        dialogTheme: const DialogTheme(
+                          alignment: Alignment.topCenter,
+                        ),
+                      ),
+                      child: dialog!,
+                    ),
+                ],
+              ),
             ),
           ),
         ),

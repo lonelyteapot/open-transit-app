@@ -15,15 +15,24 @@ final router = GoRouter(
   routes: [
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
-      builder: (context, state, child) => RegularPageWrapper(body: child),
+      builder: (context, state, child) => RegularPageWrapper(
+        body: child,
+        goRouterState: state,
+      ),
       routes: [
         GoRoute(
           path: '/',
           builder: (context, state) => const MainView(),
           routes: [
             GoRoute(
-              path: 'routes',
-              builder: (context, state) => const RoutesView(),
+              path: ':network_id',
+              builder: (context, state) => const MainView(),
+              routes: [
+                GoRoute(
+                  path: 'routes',
+                  builder: (context, state) => const RoutesView(),
+                ),
+              ],
             ),
           ],
         ),

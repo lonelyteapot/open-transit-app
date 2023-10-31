@@ -9,7 +9,7 @@ import 'network_repo.dart';
 
 part 'network_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 TransitNetworkRepository transitNetworkRepository(
   TransitNetworkRepositoryRef ref,
 ) {
@@ -22,7 +22,7 @@ TransitNetworkRepository transitNetworkRepository(
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class TransitNetworks extends _$TransitNetworks {
   @override
   FutureOr<List<TransitNetwork>> build() async {

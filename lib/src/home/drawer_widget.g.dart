@@ -6,7 +6,7 @@ part of 'drawer_widget.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$apkDownloadUrlHash() => r'36942c31212424d37de0cf45c5afff26d8c5bad4';
+String _$apkDownloadUrlHash() => r'a565cd39cd7f5d77fd4f2edae711b838eb5ecc87';
 
 /// See also [apkDownloadUrl].
 @ProviderFor(apkDownloadUrl)

@@ -2,7 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../core/graphql.dart';
 import '../settings/settings_provider.dart';
-import '../transit_network_selector/selected_network_provider.dart';
+import '../transit_network_selector/current_network_provider.dart';
 import 'gql_route_repo.dart';
 import 'mock_route_repo.dart';
 import 'route_model.dart';
@@ -23,10 +23,10 @@ TransitRouteRepository transitRouteRepository(
   }
 }
 
-@riverpod
+@Riverpod(dependencies: [transitRouteRepository, CurrentTransitNetwork])
 FutureOr<List<TransitRoute>> transitRoutes(TransitRoutesRef ref) async {
   final transitRoutesRepository = ref.watch(transitRouteRepositoryProvider);
-  final selectedNetwork = ref.watch(selectedTransitNetworkProvider);
-  final networkId = selectedNetwork.value!.id;
+  final currentNetwork = ref.watch(currentTransitNetworkProvider);
+  final networkId = currentNetwork.value!.id;
   return await transitRoutesRepository.getAllRoutesForNetwork(networkId);
 }

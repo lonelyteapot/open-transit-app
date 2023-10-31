@@ -9,7 +9,7 @@ import '../core/constants.dart';
 import '../core/utils.dart';
 import '../settings/settings_model.dart';
 import '../settings/settings_provider.dart';
-import '../transit_network_selector/selected_network_provider.dart';
+import '../transit_network_selector/current_network_provider.dart';
 import '../transit_networks/network_model.dart';
 import 'ot_map_controller.dart';
 import 'ot_map_controller_provider.dart';
@@ -73,7 +73,7 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
     );
   }
 
-  void _handleSelectedTransitNetworkChange(
+  void _handleCurrentTransitNetworkChange(
     AsyncValue<TransitNetwork?>? prev,
     AsyncValue<TransitNetwork?> next,
   ) {
@@ -110,8 +110,8 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
   @override
   Widget build(BuildContext context) {
     ref.listen(
-      selectedTransitNetworkProvider,
-      _handleSelectedTransitNetworkChange,
+      currentTransitNetworkProvider,
+      _handleCurrentTransitNetworkChange,
     );
     ref.listen(settingsProvider, _handleSettingsChange);
     return FlutterMap(

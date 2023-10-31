@@ -24,7 +24,7 @@ final transitRouteRepositoryProvider =
 
 typedef TransitRouteRepositoryRef
     = AutoDisposeProviderRef<TransitRouteRepository>;
-String _$transitRoutesHash() => r'e8b98bd557d873f2c9a7a0c973ec7e5437cb5f0c';
+String _$transitRoutesHash() => r'ad4807f3682838f937bd22d4b34bbb38d784dc41';
 
 /// See also [transitRoutes].
 @ProviderFor(transitRoutes)
@@ -35,8 +35,16 @@ final transitRoutesProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$transitRoutesHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
+  dependencies: <ProviderOrFamily>[
+    transitRouteRepositoryProvider,
+    currentTransitNetworkProvider
+  ],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    transitRouteRepositoryProvider,
+    ...?transitRouteRepositoryProvider.allTransitiveDependencies,
+    currentTransitNetworkProvider,
+    ...?currentTransitNetworkProvider.allTransitiveDependencies
+  },
 );
 
 typedef TransitRoutesRef = AutoDisposeFutureProviderRef<List<TransitRoute>>;

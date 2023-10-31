@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../transit_networks/network_provider.dart';
-import 'selected_network_provider.dart';
+import 'current_network_provider.dart';
 
 class LocationSwitcher extends ConsumerWidget {
   LocationSwitcher({super.key});
@@ -13,7 +13,7 @@ class LocationSwitcher extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final wrappedNetworks = ref.watch(transitNetworksProvider);
-    final wrappedSelectedNetwork = ref.watch(selectedTransitNetworkProvider);
+    final wrappedCurrentNetwork = ref.watch(currentTransitNetworkProvider);
 
     final label = switch (wrappedNetworks) {
       AsyncData() => 'Location',
@@ -27,7 +27,7 @@ class LocationSwitcher extends ConsumerWidget {
       content: DropdownMenu<String?>(
         enabled: wrappedNetworks.hasValue,
         leadingIcon: const Icon(Icons.location_city),
-        initialSelection: wrappedSelectedNetwork.valueOrNull?.id,
+        initialSelection: wrappedCurrentNetwork.valueOrNull?.id,
         controller: textEditingController,
         // TODO: Rework when DropdownMenu gets expandedInsets property
         width: 232,
@@ -44,7 +44,9 @@ class LocationSwitcher extends ConsumerWidget {
           orElse: List.empty,
         ),
         onSelected: (final String? networkId) {
-          ref.read(selectedTransitNetworkProvider.notifier).select(networkId);
+          ref
+              .read(currentTransitNetworkProvider.notifier)
+              .change(context, networkId);
         },
       ),
     );

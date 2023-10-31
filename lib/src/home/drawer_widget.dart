@@ -8,7 +8,7 @@ import 'package:url_launcher/link.dart';
 import '../core/constants.dart';
 import '../core/utils.dart';
 import '../settings/settings_provider.dart';
-import '../transit_network_selector/selected_network_provider.dart';
+import '../transit_network_selector/current_network_provider.dart';
 import '../transit_networks/network_model.dart';
 import '../web_utils/web_utils.dart';
 
@@ -118,13 +118,13 @@ class _LocationSwitcher extends ConsumerStatefulWidget {
 class _LocationSwitcherState extends ConsumerState<_LocationSwitcher> {
   void handlePress() {
     Scaffold.of(context).closeEndDrawer();
-    ref.read(selectedTransitNetworkProvider.notifier).select(null);
+    ref.read(currentTransitNetworkProvider.notifier).change(context, null);
   }
 
   @override
   Widget build(BuildContext context) {
-    final selectedNetwork = ref.watch(selectedTransitNetworkProvider);
-    return switch (selectedNetwork) {
+    final currentNetwork = ref.watch(currentTransitNetworkProvider);
+    return switch (currentNetwork) {
       AsyncData(value: final TransitNetwork network) => ListTile(
           onTap: handlePress,
           leading: const Icon(Icons.location_city),
@@ -139,7 +139,7 @@ class _LocationSwitcherState extends ConsumerState<_LocationSwitcher> {
           leading: const Icon(Icons.location_city),
           title: TextButton(
             onPressed: handlePress,
-            child: const Text('Choose your location'),
+            child: const Text('Select your location'),
           ),
         ),
       _ => const Center(child: CircularProgressIndicator()),

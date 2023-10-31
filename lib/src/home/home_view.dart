@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../core/providers.dart';
-import '../transit_network_selector/selected_network_provider.dart';
+import '../core/utils.dart';
+import '../transit_network_selector/current_network_provider.dart';
 
 class MainView extends StatelessWidget {
   const MainView({super.key});
@@ -51,7 +51,7 @@ class TopButtons extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isNetworkSelected =
-        ref.watch(selectedTransitNetworkProvider).valueOrNull != null;
+        ref.watch(currentTransitNetworkProvider).valueOrNull != null;
     return GridView.count(
       primary: false,
       physics: const NeverScrollableScrollPhysics(),
@@ -75,7 +75,7 @@ class TopButtons extends ConsumerWidget {
                           curve: Curves.easeOut,
                         ),
                   );
-                  context.go('/routes');
+                  context.goRelative('routes');
                 },
           style: FilledButtonTheme.of(context).style!.copyWith(
                 shape: _createRoundedCornerShape(base: 8, topLeft: 16),

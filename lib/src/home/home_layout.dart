@@ -7,7 +7,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../core/providers.dart';
 import '../core/utils.dart';
 import '../map/map_widget.dart';
-import '../transit_network_selector/selected_network_provider.dart';
+import '../transit_network_selector/current_network_provider.dart';
 import '../transit_network_selector/selector_widget.dart';
 import 'drawer_widget.dart';
 
@@ -15,13 +15,15 @@ const double kSidebarWidth = 400;
 
 final mapKey = GlobalKey(debugLabel: 'mainMap');
 
-class RegularPageWrapper extends StatelessWidget {
+class RegularPageWrapper extends ConsumerWidget {
   const RegularPageWrapper({
     super.key,
     required this.body,
+    required this.goRouterState,
   });
 
   final Widget body;
+  final GoRouterState goRouterState;
 
   Widget _buildWithConstraints(
     BuildContext context,
@@ -34,9 +36,20 @@ class RegularPageWrapper extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: _buildWithConstraints,
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ProviderScope(
+      overrides: [
+        goRouterStateProvider.overrideWithValue(goRouterState),
+      ],
+      child: Consumer(
+        builder: (context, ref, _) {
+          // It's a hack for something, prevents issues from lazy-loading
+          ref.listen(currentTransitNetworkProvider, (_, __) {});
+          return LayoutBuilder(
+            builder: _buildWithConstraints,
+          );
+        },
+      ),
     );
   }
 }
@@ -52,8 +65,8 @@ class RegularPageScaffold extends ConsumerWidget {
   final Widget body;
 
   Widget? _buildDialog(BuildContext context, WidgetRef ref) {
-    final wrappedSelectedNetwork = ref.watch(selectedTransitNetworkProvider);
-    if (wrappedSelectedNetwork.valueOrNull == null) {
+    final wrappedcurrentNetwork = ref.watch(currentTransitNetworkProvider);
+    if (wrappedcurrentNetwork.valueOrNull == null) {
       return LocationSwitcher();
     }
     return null;
@@ -61,9 +74,9 @@ class RegularPageScaffold extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final routerState = GoRouterState.of(context);
     final shouldShowBackButton =
-        GoRouter.of(context).routerDelegate.currentConfiguration.fullPath !=
-            '/';
+        routerState.fullPath != '/' && routerState.fullPath != '/:network_id';
     final map = CustomMapWidget(key: mapKey);
     final dialog = _buildDialog(context, ref);
     return Scaffold(

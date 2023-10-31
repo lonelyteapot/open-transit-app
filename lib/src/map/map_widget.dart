@@ -60,7 +60,10 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
     // Schedule for next tick for stability
     Future.delayed(Duration.zero, () {
       // Try to avoid bounding issues
-      mapController.teleportCameraToDefault();
+      _handleCurrentTransitNetworkChange(
+        null,
+        ref.read(currentTransitNetworkProvider),
+      );
     });
   }
 
@@ -77,13 +80,7 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
     AsyncValue<TransitNetwork?>? prev,
     AsyncValue<TransitNetwork?> next,
   ) {
-    if (prev == null) {
-      return;
-    }
-    if (!(prev.hasValue && next.hasValue)) {
-      return;
-    }
-    if (prev.value != next.value) {
+    if (prev?.value != next.value || next.value == null) {
       var nextCenterLat = next.valueOrNull?.centerLat;
       var nextCenterLon = next.valueOrNull?.centerLon;
       double? nextZoom = kDefaultZoom;

@@ -11,7 +11,9 @@ GraphQLClient graphqlClient(GraphqlClientRef ref) {
     settingsProvider.select((s) => s.graphqlEndpointUrl),
   );
   if (graphqlEndpointUrl.isEmpty) {
-    throw Exception('GraphQL endpoint URL is not configured');
+    throw Exception(
+      'GraphQL endpoint URL is not configured. Set it or enable "Use mock data".',
+    );
   }
 
   final link = HttpLink(graphqlEndpointUrl);

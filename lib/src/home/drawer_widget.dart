@@ -9,7 +9,6 @@ import '../core/constants.dart';
 import '../core/utils.dart';
 import '../settings/settings_provider.dart';
 import '../transit_network_selector/current_network_provider.dart';
-import '../transit_networks/network_model.dart';
 import '../web_utils/web_utils.dart';
 
 part 'drawer_widget.g.dart';
@@ -123,27 +122,30 @@ class _LocationSwitcherState extends ConsumerState<_LocationSwitcher> {
 
   @override
   Widget build(BuildContext context) {
-    final currentNetwork = ref.watch(currentTransitNetworkProvider);
-    return switch (currentNetwork) {
-      AsyncData(value: final TransitNetwork network) => ListTile(
-          onTap: handlePress,
-          leading: const Icon(Icons.location_city),
-          title: Text(network.name),
-          trailing: TextButton(
-            onPressed: handlePress,
-            child: const Text('Change'),
-          ),
+    final currentNetworkAsync = ref.watch(currentTransitNetworkProvider);
+    final network = currentNetworkAsync.valueOrNull;
+    if (network != null) {
+      return ListTile(
+        onTap: handlePress,
+        leading: const Icon(Icons.location_city_rounded),
+        title: Text(network.name),
+        trailing: TextButton(
+          onPressed: handlePress,
+          child: const Text('Change'),
         ),
-      AsyncData(value: final void _) => ListTile(
-          onTap: handlePress,
-          leading: const Icon(Icons.location_city),
-          title: TextButton(
-            onPressed: handlePress,
-            child: const Text('Select your location'),
-          ),
+      );
+    }
+    if (currentNetworkAsync.hasValue) {
+      return ListTile(
+        onTap: handlePress,
+        leading: const Icon(Icons.location_city_rounded),
+        title: TextButton(
+          onPressed: handlePress,
+          child: const Text('Select your location'),
         ),
-      _ => const Center(child: CircularProgressIndicator()),
-    };
+      );
+    }
+    return const Center(child: CircularProgressIndicator());
   }
 }
 

@@ -21,9 +21,14 @@ class MainView extends StatelessWidget {
       child: FilledButtonTheme(
         data: FilledButtonThemeData(
           style: ButtonStyle(
+            textStyle: MaterialStateProperty.all(
+              Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+            ),
             shape: MaterialStateProperty.all<OutlinedBorder>(
               const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8)),
+                borderRadius: BorderRadius.all(Radius.circular(16)),
               ),
             ),
           ),
@@ -56,10 +61,10 @@ class TopButtons extends ConsumerWidget {
       primary: false,
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      crossAxisCount: 3,
+      crossAxisCount: 2,
       mainAxisSpacing: 8,
       crossAxisSpacing: 8,
-      childAspectRatio: 2.5,
+      childAspectRatio: 2,
       clipBehavior: Clip.none,
       children: [
         FilledButton.tonal(
@@ -78,18 +83,28 @@ class TopButtons extends ConsumerWidget {
                   context.goRelative('routes');
                 },
           style: FilledButtonTheme.of(context).style!.copyWith(
-                shape: _createRoundedCornerShape(base: 8, topLeft: 16),
+                shape: _createRoundedCornerShape(base: 16),
               ),
           child: const Text('Routes'),
         ),
         FilledButton.tonal(
           onPressed: !isNetworkSelected ? null : () {},
+          style: FilledButtonTheme.of(context).style!.copyWith(
+                shape: _createRoundedCornerShape(base: 16),
+              ),
           child: const Text('(blank)'),
         ),
         FilledButton.tonal(
           onPressed: !isNetworkSelected ? null : () {},
           style: FilledButtonTheme.of(context).style!.copyWith(
-                shape: _createRoundedCornerShape(base: 8, topRight: 16),
+                shape: _createRoundedCornerShape(base: 16),
+              ),
+          child: const Text('(blank)'),
+        ),
+        FilledButton.tonal(
+          onPressed: !isNetworkSelected ? null : () {},
+          style: FilledButtonTheme.of(context).style!.copyWith(
+                shape: _createRoundedCornerShape(base: 16),
               ),
           child: const Text('(blank)'),
         ),
@@ -105,6 +120,7 @@ MaterialStateProperty<OutlinedBorder?> _createRoundedCornerShape({
   double? bottomLeft,
   double? bottomRight,
 }) {
+  base = 16;
   return MaterialStateProperty.all<OutlinedBorder>(
     RoundedRectangleBorder(
       borderRadius: BorderRadius.all(Radius.circular(base)).copyWith(

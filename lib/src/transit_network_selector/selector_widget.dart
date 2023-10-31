@@ -52,3 +52,27 @@ class LocationSwitcher extends ConsumerWidget {
     );
   }
 }
+
+class ErrorDialog extends StatelessWidget {
+  const ErrorDialog({
+    super.key,
+    required this.text,
+  });
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return AlertDialog(
+      title: const Text('Error'),
+      elevation: 8,
+      backgroundColor: theme.colorScheme.error,
+      titleTextStyle: theme.textTheme.titleLarge!
+          .copyWith(color: theme.colorScheme.onError),
+      contentTextStyle: theme.textTheme.titleMedium!
+          .copyWith(color: theme.colorScheme.onError),
+      content: Text(text),
+    );
+  }
+}

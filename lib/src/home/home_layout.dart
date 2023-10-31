@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +11,7 @@ import '../core/utils.dart';
 import '../map/map_widget.dart';
 import '../transit_network_selector/current_network_provider.dart';
 import '../transit_network_selector/selector_widget.dart';
+import '../transit_networks/network_provider.dart';
 import 'drawer_widget.dart';
 
 const double kSidebarWidth = 400;
@@ -65,8 +68,12 @@ class RegularPageScaffold extends ConsumerWidget {
   final Widget body;
 
   Widget? _buildDialog(BuildContext context, WidgetRef ref) {
-    final wrappedcurrentNetwork = ref.watch(currentTransitNetworkProvider);
-    if (wrappedcurrentNetwork.valueOrNull == null) {
+    final currentNetworkAsync = ref.watch(currentTransitNetworkProvider);
+    final networksAsync = ref.watch(transitNetworksProvider);
+    if (currentNetworkAsync.hasValue && currentNetworkAsync.value == null) {
+      if (networksAsync.hasError) {
+        return ErrorDialog(text: networksAsync.error.toString());
+      }
       return LocationSwitcher();
     }
     return null;
@@ -77,11 +84,22 @@ class RegularPageScaffold extends ConsumerWidget {
     final routerState = GoRouterState.of(context);
     final shouldShowBackButton =
         routerState.fullPath != '/' && routerState.fullPath != '/:network_id';
+    final currentTransitNetworkName =
+        ref.watch(currentTransitNetworkProvider).valueOrNull?.name;
     final map = CustomMapWidget(key: mapKey);
     final dialog = _buildDialog(context, ref);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        title: currentTransitNetworkName != null
+            ? Text(
+                currentTransitNetworkName,
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  letterSpacing: 1.0,
+                  fontFeatures: [const FontFeature('smcp')],
+                ),
+              )
+            : null,
         centerTitle: orientation == Orientation.portrait,
         forceMaterialTransparency: true,
         backgroundColor: Colors.transparent,
@@ -90,8 +108,13 @@ class RegularPageScaffold extends ConsumerWidget {
           statusBarIconBrightness:
               Theme.of(context).isDark ? Brightness.light : Brightness.dark,
         ),
-        leading:
-            shouldShowBackButton ? BackButton(onPressed: context.pop) : null,
+        leading: shouldShowBackButton
+            ? BackButton(onPressed: context.pop)
+            : const IconButton(
+                onPressed: null,
+                icon: Icon(Icons.home_work_rounded),
+              ),
+        automaticallyImplyLeading: false,
       ),
       drawerScrimColor: Colors.black12,
       endDrawerEnableOpenDragGesture: false,

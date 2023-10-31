@@ -5,51 +5,56 @@ import '../transit_networks/network_provider.dart';
 import 'current_network_provider.dart';
 
 class LocationSwitcher extends ConsumerWidget {
-  LocationSwitcher({super.key});
-
-  // TODO: Dispose, or remove altogether
-  final TextEditingController textEditingController = TextEditingController();
+  const LocationSwitcher({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final wrappedNetworks = ref.watch(transitNetworksProvider);
-    final wrappedCurrentNetwork = ref.watch(currentTransitNetworkProvider);
+    final networksAsync = ref.watch(transitNetworksProvider);
+    const fixedWidth = 240.0;
 
-    final label = switch (wrappedNetworks) {
-      AsyncData() => 'Location',
-      AsyncError(:final error) => error.toString(),
-      _ => 'Loading...',
-    };
-
-    return AlertDialog(
-      title: const Text('Choose your location'),
-      elevation: 8,
-      content: DropdownMenu<String?>(
-        enabled: wrappedNetworks.hasValue,
-        leadingIcon: const Icon(Icons.location_city),
-        initialSelection: wrappedCurrentNetwork.valueOrNull?.id,
-        controller: textEditingController,
-        // TODO: Rework when DropdownMenu gets expandedInsets property
-        width: 232,
-        label: Text(label),
-        dropdownMenuEntries: wrappedNetworks.maybeWhen(
-          data: (data) => data.map(
-            (network) {
-              return DropdownMenuEntry(
-                value: network.id,
-                label: network.name,
-              );
-            },
-          ).toList(),
-          orElse: List.empty,
+    return switch (networksAsync) {
+      AsyncData(value: final networks) => AlertDialog(
+          icon: const Icon(Icons.location_city_rounded),
+          title: const Text('Select your location'),
+          elevation: 8,
+          content: SizedBox(
+            // TODO: dynamic width
+            width: fixedWidth,
+            child: ListView.builder(
+              primary: true,
+              shrinkWrap: true,
+              itemCount: networks.length,
+              itemBuilder: (BuildContext context, int index) {
+                final network = networks[index];
+                return ListTile(
+                  title: Text(network.name),
+                  onTap: () {
+                    ref
+                        .read(currentTransitNetworkProvider.notifier)
+                        .change(context, network.id);
+                  },
+                );
+              },
+            ),
+          ),
         ),
-        onSelected: (final String? networkId) {
-          ref
-              .read(currentTransitNetworkProvider.notifier)
-              .change(context, networkId);
-        },
-      ),
-    );
+      AsyncError(:final error) => ErrorDialog(text: error.toString()),
+      _ => AlertDialog(
+          icon: const Icon(Icons.location_city_rounded),
+          title: const SizedBox(
+            width: fixedWidth,
+            child: Text('Loading available locations...'),
+          ),
+          elevation: 8,
+          content: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: fixedWidth,
+              maxHeight: 200,
+            ),
+            child: const Center(child: CircularProgressIndicator()),
+          ),
+        ),
+    };
   }
 }
 

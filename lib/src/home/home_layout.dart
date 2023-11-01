@@ -11,7 +11,6 @@ import '../core/utils.dart';
 import '../map/map_widget.dart';
 import '../transit_network_selector/current_network_provider.dart';
 import '../transit_network_selector/selector_widget.dart';
-import '../transit_networks/network_provider.dart';
 import 'drawer_widget.dart';
 
 const double kSidebarWidth = 400;
@@ -69,12 +68,8 @@ class RegularPageScaffold extends ConsumerWidget {
 
   Widget? _buildDialog(BuildContext context, WidgetRef ref) {
     final currentNetworkAsync = ref.watch(currentTransitNetworkProvider);
-    final networksAsync = ref.watch(transitNetworksProvider);
     if (currentNetworkAsync.hasValue && currentNetworkAsync.value == null) {
-      if (networksAsync.hasError) {
-        return ErrorDialog(text: networksAsync.error.toString());
-      }
-      return LocationSwitcher();
+      return const LocationSwitcher();
     }
     return null;
   }

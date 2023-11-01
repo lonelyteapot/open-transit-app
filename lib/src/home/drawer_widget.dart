@@ -43,16 +43,6 @@ class DrawerContent extends ConsumerWidget {
           textAlign: TextAlign.center,
         ),
         SwitchListTile(
-          title: const Text('Use mock data'),
-          value: ref.watch(settingsProvider).useMockData,
-          onChanged: (value) {
-            final settingsNotifier = ref.read(settingsProvider.notifier);
-            settingsNotifier.modifyAndSave(
-              (oldSettings) => oldSettings.copyWith(useMockData: value),
-            );
-          },
-        ),
-        SwitchListTile(
           title: const Text('Show debugging info'),
           value: ref.watch(settingsProvider).showDebugInfo,
           onChanged: (value) {
@@ -78,9 +68,20 @@ class DrawerContent extends ConsumerWidget {
             );
           },
         ),
+        SwitchListTile(
+          title: const Text('Use mock data'),
+          value: ref.watch(settingsProvider).useMockData,
+          onChanged: (value) {
+            final settingsNotifier = ref.read(settingsProvider.notifier);
+            settingsNotifier.modifyAndSave(
+              (oldSettings) => oldSettings.copyWith(useMockData: value),
+            );
+          },
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: TextField(
+            enabled: !ref.watch(settingsProvider).useMockData,
             controller: TextEditingController(
               text: ref.watch(settingsProvider).graphqlEndpointUrl,
             ),

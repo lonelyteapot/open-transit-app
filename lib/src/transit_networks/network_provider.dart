@@ -1,3 +1,5 @@
+import 'package:graphql/client.dart';
+import 'package:http/http.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../core/graphql.dart';
@@ -27,6 +29,53 @@ class TransitNetworks extends _$TransitNetworks {
   @override
   FutureOr<List<TransitNetwork>> build() async {
     final networkRepository = ref.watch(transitNetworkRepositoryProvider);
-    return await networkRepository.getNetworks();
+    try {
+      return await networkRepository.getNetworks();
+    } on OperationException catch (e) {
+      throw CustomException.fromException(e);
+    }
+  }
+}
+
+class CustomException implements Exception {
+  CustomException(
+    this.message, {
+    required this.details,
+    this.origin,
+  });
+
+  factory CustomException.fromException(Exception exc) {
+    if (exc is OperationException) {
+      final linkExc = exc.linkException;
+      if (linkExc != null) {
+        if (linkExc.originalException is ClientException) {
+          return CustomException(
+            'Failed to get networks from the server',
+            details: 'Network request failed\n${linkExc.originalException}',
+            origin: exc,
+          );
+        }
+        return CustomException(
+          'Failed to get networks from the server',
+          details: 'Network request failed\n$linkExc',
+          origin: exc,
+        );
+      }
+    }
+
+    return CustomException(
+      exc.runtimeType.toString(),
+      details: exc.toString(),
+      origin: exc,
+    );
+  }
+
+  final String message;
+  final String details;
+  final Exception? origin;
+
+  @override
+  String toString() {
+    return '$message\n\nDetails:\n$details';
   }
 }

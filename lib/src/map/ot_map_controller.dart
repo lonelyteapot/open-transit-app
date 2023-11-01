@@ -36,13 +36,7 @@ class OtMapController {
       return;
     }
 
-    final result = impl.move(center, zoom);
-    if (!result) {
-      final fResultPos = formatCameraPosition(this.center, this.zoom);
-      throw Exception(
-        'Map camera failed to teleport to $fCenter, now at $fResultPos',
-      );
-    }
+    impl.move(center, zoom);
   }
 
   void teleportCameraInsideBounds(LatLngBounds bounds) {
@@ -55,13 +49,7 @@ class OtMapController {
       return;
     }
 
-    final result = impl.fitCamera(CameraFit.insideBounds(bounds: bounds));
-    if (!result) {
-      final fResultPos = formatCameraPosition(center, zoom);
-      throw Exception(
-        'Map camera failed to fit inside $fCorner1, $fCorner2, now at $fResultPos',
-      );
-    }
+    impl.fitCamera(CameraFit.insideBounds(bounds: bounds));
   }
 
   void teleportCameraToDefault() {

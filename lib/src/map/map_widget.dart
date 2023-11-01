@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
@@ -125,7 +126,9 @@ class _CustomMapWidgetState extends ConsumerState<CustomMapWidget> {
         backgroundColor:
             Theme.of(context).isDark ? const Color(0xFF292929) : Colors.white,
         interactionOptions: InteractionOptions(
-          flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+          flags: InteractiveFlag.all &
+              ~InteractiveFlag.rotate &
+              (kIsWeb ? ~InteractiveFlag.flingAnimation : InteractiveFlag.all),
           cursorKeyboardRotationOptions:
               CursorKeyboardRotationOptions.disabled(),
         ),

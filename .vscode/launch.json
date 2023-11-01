@@ -1,0 +1,31 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "flutter app",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--dart-define-from-file=dart-env.json",
+            ]
+        },
+        {
+            "name": "flutter app (profile)",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--dart-define-from-file=dart-env.json",
+            ],
+            "flutterMode": "profile"
+        },
+        {
+            "name": "flutter app (release)",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--dart-define-from-file=dart-env.json",
+            ],
+            "flutterMode": "release"
+        }
+    ]
+}

@@ -10,35 +10,46 @@ class SettingsRepository {
 
   final SharedPreferences prefs;
 
-  SettingsData load() {
-    final themeMode = prefs.get('themeMode') ?? 'system';
-    final showDebugInfo = prefs.getBool('showDebugInfo') ?? false;
-    final useCancellableTileProvider =
-        prefs.getBool('useCancellableTileProvider') ?? true;
-    final useMockData = prefs.getBool('useMockData') ?? false;
-    final graphqlEndpointUrl = prefs.getString('graphqlEndpointUrl') ?? '';
-    return SettingsData(
-      themeMode: ThemeMode.values.firstWhere(
-        (element) => element.name == themeMode,
-      ),
-      showDebugInfo: showDebugInfo,
-      useCancellableTileProvider: useCancellableTileProvider,
-      useMockData: useMockData,
-      graphqlEndpointUrl: graphqlEndpointUrl,
-    );
+  Future<void> save(final SettingsData settings) async {
+    final json = settings.toJson();
+
+    await Future.forEach(json.entries, (e) async {
+      await _saveEntry(e.key, e.value);
+    });
   }
 
-  Future<void> save(final SettingsData settings) async {
-    final prefs = await SharedPreferences.getInstance();
-    await Future.wait([
-      prefs.setString('themeMode', settings.themeMode.name),
-      prefs.setBool('showDebugInfo', settings.showDebugInfo),
-      prefs.setBool(
-        'useCancellableTileProvider',
-        settings.useCancellableTileProvider,
-      ),
-      prefs.setBool('useMockData', settings.useMockData),
-      prefs.setString('graphqlEndpointUrl', settings.graphqlEndpointUrl),
-    ]);
+  SettingsData load() {
+    final json = defaultSettings.toJson();
+
+    for (final key in json.keys) {
+      final value = prefs.get(key);
+      if (value != null) {
+        json[key] = value;
+      }
+    }
+
+    return SettingsData.fromJson(json);
+  }
+
+  Future<void> _saveEntry(final String key, final dynamic value) async {
+    switch (value) {
+      case bool value:
+        await prefs.setBool(key, value);
+        break;
+      case int value:
+        await prefs.setInt(key, value);
+        break;
+      case double value:
+        await prefs.setDouble(key, value);
+        break;
+      case String value:
+        await prefs.setString(key, value);
+        break;
+      case List<String> value:
+        await prefs.setStringList(key, value);
+        break;
+      default:
+        throw UnimplementedError('Unsupported SharedPreferences value type');
+    }
   }
 }

@@ -6,7 +6,7 @@ part of 'graphql.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$graphqlClientHash() => r'0f0c2323e68b6e34530cb9815e88f4a4fc558957';
+String _$graphqlClientHash() => r'af66ce9770f67b3be55bf35c1a31b47b7d43a79e';
 
 /// See also [graphqlClient].
 @ProviderFor(graphqlClient)

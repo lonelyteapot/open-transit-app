@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+SettingsData _$SettingsDataFromJson(Map<String, dynamic> json) {
+  return _SettingsData.fromJson(json);
+}
+
 /// @nodoc
 mixin _$SettingsData {
   ThemeMode get themeMode => throw _privateConstructorUsedError;
@@ -22,6 +26,7 @@ mixin _$SettingsData {
   bool get useMockData => throw _privateConstructorUsedError;
   String get graphqlEndpointUrl => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $SettingsDataCopyWith<SettingsData> get copyWith =>
       throw _privateConstructorUsedError;
@@ -144,7 +149,7 @@ class __$$SettingsDataImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$SettingsDataImpl implements _SettingsData {
   const _$SettingsDataImpl(
       {required this.themeMode,
@@ -152,6 +157,9 @@ class _$SettingsDataImpl implements _SettingsData {
       required this.useCancellableTileProvider,
       required this.useMockData,
       required this.graphqlEndpointUrl});
+
+  factory _$SettingsDataImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SettingsDataImplFromJson(json);
 
   @override
   final ThemeMode themeMode;
@@ -188,6 +196,7 @@ class _$SettingsDataImpl implements _SettingsData {
                 other.graphqlEndpointUrl == graphqlEndpointUrl));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, themeMode, showDebugInfo,
       useCancellableTileProvider, useMockData, graphqlEndpointUrl);
@@ -197,6 +206,13 @@ class _$SettingsDataImpl implements _SettingsData {
   @pragma('vm:prefer-inline')
   _$$SettingsDataImplCopyWith<_$SettingsDataImpl> get copyWith =>
       __$$SettingsDataImplCopyWithImpl<_$SettingsDataImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$SettingsDataImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _SettingsData implements SettingsData {
@@ -206,6 +222,9 @@ abstract class _SettingsData implements SettingsData {
       required final bool useCancellableTileProvider,
       required final bool useMockData,
       required final String graphqlEndpointUrl}) = _$SettingsDataImpl;
+
+  factory _SettingsData.fromJson(Map<String, dynamic> json) =
+      _$SettingsDataImpl.fromJson;
 
   @override
   ThemeMode get themeMode;

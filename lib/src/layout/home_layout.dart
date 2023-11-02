@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../core/providers.dart';
-import '../core/router.dart';
+import '../core/router_extension.dart';
 import '../core/utils.dart';
 import '../map/map_widget.dart';
 import '../transit_network_selector/current_network_provider.dart';
@@ -67,8 +67,9 @@ class RegularPageScaffold extends ConsumerWidget {
   final Widget body;
 
   Widget? _buildDialog(BuildContext context, WidgetRef ref) {
+    final router = GoRouter.of(context);
     // TODO: fix this
-    if (_isSettingsPageTop()) {
+    if (router.isSettingsPage()) {
       return null;
     }
     final currentNetworkAsync = ref.watch(currentTransitNetworkProvider);
@@ -80,28 +81,14 @@ class RegularPageScaffold extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final routerState = GoRouterState.of(context);
-    // final shouldShowBackButton =
-    //     routerState.fullPath != '/' && routerState.fullPath != '/:network_id';
-    final shellNavigator = shellNavigatorKey.currentWidget as Navigator?;
-    final shouldShowBackButton = (shellNavigator?.pages.length ?? 0) > 2;
-    final shouldEnableSettingsButton = !_isSettingsPageTop();
-    // final currentTransitNetworkName =
-    //     ref.watch(currentTransitNetworkProvider).valueOrNull?.name;
+    final router = GoRouter.of(context);
+    final showBackButton = !router.isHomePage() && !router.isIndexPage();
+    final enableSettingsButton = !router.isSettingsPage();
     final map = CustomMapWidget(key: mapKey);
     final dialog = _buildDialog(context, ref);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        // title: currentTransitNetworkName != null
-        //     ? Text(
-        //         currentTransitNetworkName,
-        //         style: Theme.of(context).textTheme.titleMedium!.copyWith(
-        //           letterSpacing: 1.0,
-        //           fontFeatures: [const FontFeature('smcp')],
-        //         ),
-        //       )
-        //     : null,
         centerTitle: orientation == Orientation.portrait,
         forceMaterialTransparency: true,
         backgroundColor: Colors.transparent,
@@ -110,7 +97,7 @@ class RegularPageScaffold extends ConsumerWidget {
           statusBarIconBrightness:
               Theme.of(context).isDark ? Brightness.light : Brightness.dark,
         ),
-        leading: shouldShowBackButton
+        leading: showBackButton
             ? BackButton(
                 onPressed: () => context.pop(),
               )
@@ -120,7 +107,7 @@ class RegularPageScaffold extends ConsumerWidget {
               ),
         actions: [
           IconButton(
-            onPressed: shouldEnableSettingsButton
+            onPressed: enableSettingsButton
                 ? () => unawaited(context.push('/settings'))
                 : null,
             icon: const Icon(Icons.settings),
@@ -361,10 +348,4 @@ class _DragHandle extends ConsumerWidget {
       ),
     );
   }
-}
-
-bool _isSettingsPageTop() {
-  final shellNavigator = shellNavigatorKey.currentWidget as Navigator?;
-  final topPage = shellNavigator?.pages.last;
-  return topPage?.name == 'settings';
 }

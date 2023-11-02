@@ -23,7 +23,7 @@ final transitNetworkRepositoryProvider =
 );
 
 typedef TransitNetworkRepositoryRef = ProviderRef<TransitNetworkRepository>;
-String _$transitNetworksHash() => r'05e921a08618f06508cbed6409f93fc05da63610';
+String _$transitNetworksHash() => r'1c09eb9bb5c8a5de035a08dcbad84dfeec767edf';
 
 /// See also [TransitNetworks].
 @ProviderFor(TransitNetworks)

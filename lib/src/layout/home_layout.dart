@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,11 +7,11 @@ import 'package:go_router/go_router.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../core/providers.dart';
+import '../core/router.dart';
 import '../core/utils.dart';
 import '../map/map_widget.dart';
 import '../transit_network_selector/current_network_provider.dart';
 import '../transit_network_selector/selector_widget.dart';
-import 'drawer_widget.dart';
 
 const double kSidebarWidth = 400;
 
@@ -67,6 +67,10 @@ class RegularPageScaffold extends ConsumerWidget {
   final Widget body;
 
   Widget? _buildDialog(BuildContext context, WidgetRef ref) {
+    // TODO: fix this
+    if (_isSettingsPageTop()) {
+      return null;
+    }
     final currentNetworkAsync = ref.watch(currentTransitNetworkProvider);
     if (currentNetworkAsync.hasValue && currentNetworkAsync.value == null) {
       return const LocationSwitcher();
@@ -76,25 +80,28 @@ class RegularPageScaffold extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final routerState = GoRouterState.of(context);
-    final shouldShowBackButton =
-        routerState.fullPath != '/' && routerState.fullPath != '/:network_id';
-    final currentTransitNetworkName =
-        ref.watch(currentTransitNetworkProvider).valueOrNull?.name;
+    // final routerState = GoRouterState.of(context);
+    // final shouldShowBackButton =
+    //     routerState.fullPath != '/' && routerState.fullPath != '/:network_id';
+    final shellNavigator = shellNavigatorKey.currentWidget as Navigator?;
+    final shouldShowBackButton = (shellNavigator?.pages.length ?? 0) > 2;
+    final shouldEnableSettingsButton = !_isSettingsPageTop();
+    // final currentTransitNetworkName =
+    //     ref.watch(currentTransitNetworkProvider).valueOrNull?.name;
     final map = CustomMapWidget(key: mapKey);
     final dialog = _buildDialog(context, ref);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: currentTransitNetworkName != null
-            ? Text(
-                currentTransitNetworkName,
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  letterSpacing: 1.0,
-                  fontFeatures: [const FontFeature('smcp')],
-                ),
-              )
-            : null,
+        // title: currentTransitNetworkName != null
+        //     ? Text(
+        //         currentTransitNetworkName,
+        //         style: Theme.of(context).textTheme.titleMedium!.copyWith(
+        //           letterSpacing: 1.0,
+        //           fontFeatures: [const FontFeature('smcp')],
+        //         ),
+        //       )
+        //     : null,
         centerTitle: orientation == Orientation.portrait,
         forceMaterialTransparency: true,
         backgroundColor: Colors.transparent,
@@ -104,30 +111,22 @@ class RegularPageScaffold extends ConsumerWidget {
               Theme.of(context).isDark ? Brightness.light : Brightness.dark,
         ),
         leading: shouldShowBackButton
-            ? BackButton(onPressed: context.pop)
+            ? BackButton(
+                onPressed: () => context.pop(),
+              )
             : const IconButton(
                 onPressed: null,
                 icon: Icon(Icons.home_work_rounded),
               ),
-        automaticallyImplyLeading: false,
-      ),
-      drawerScrimColor: Colors.black12,
-      endDrawerEnableOpenDragGesture: false,
-      endDrawer: DecoratedBox(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
-              blurRadius: 8,
-            ),
-          ],
-        ),
-        child: const Drawer(
-          elevation: 0,
-          child: SafeArea(
-            child: DrawerContent(),
+        actions: [
+          IconButton(
+            onPressed: shouldEnableSettingsButton
+                ? () => unawaited(context.push('/settings'))
+                : null,
+            icon: const Icon(Icons.settings),
           ),
-        ),
+        ],
+        automaticallyImplyLeading: false,
       ),
       body: _OrientedLayout(
         orientation: orientation,
@@ -241,7 +240,10 @@ class _OrientedLayout extends ConsumerWidget {
                                 ),
                               ),
                             ),
-                            child: body!,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 16.0),
+                              child: body,
+                            ),
                           ),
                         ),
                         const Positioned(
@@ -359,4 +361,10 @@ class _DragHandle extends ConsumerWidget {
       ),
     );
   }
+}
+
+bool _isSettingsPageTop() {
+  final shellNavigator = shellNavigatorKey.currentWidget as Navigator?;
+  final topPage = shellNavigator?.pages.last;
+  return topPage?.name == 'settings';
 }

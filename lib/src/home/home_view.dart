@@ -27,36 +27,35 @@ class MainView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final androidAppLink = _buildAndroidAppLink(context, ref);
-    return SafeArea(
-      child: Material(
-        child: FilledButtonTheme(
-          data: FilledButtonThemeData(
-            style: ButtonStyle(
-              textStyle: MaterialStateProperty.all(
-                Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
+
+    final filledButtonTheme = FilledButtonThemeData(
+      style: ButtonStyle(
+        textStyle: MaterialStateProperty.all(
+          Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface,
               ),
-              shape: MaterialStateProperty.all<OutlinedBorder>(
-                const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(16)),
-                ),
-              ),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildTopButtons(context, ref),
-              const SizedBox(height: 16),
-              if (androidAppLink != null) androidAppLink,
-              const Spacer(),
-              const ThemeSwitcher(),
-              const NetworkSwitcher(),
-            ],
+        ),
+        shape: MaterialStateProperty.all<OutlinedBorder>(
+          const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
           ),
         ),
+      ),
+    );
+
+    return FilledButtonTheme(
+      data: filledButtonTheme,
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildTopButtons(context, ref),
+          const SizedBox(height: 16),
+          if (androidAppLink != null) androidAppLink,
+          const Spacer(),
+          const ThemeSwitcher(),
+          const NetworkSwitcher(),
+        ],
       ),
     );
   }
@@ -94,15 +93,7 @@ class MainView extends ConsumerWidget {
         ),
         FilledButton.tonal(
           onPressed: !isNetworkSelected ? null : () {},
-          child: const Text('(blank)'),
-        ),
-        FilledButton.tonal(
-          onPressed: !isNetworkSelected ? null : () {},
-          child: const Text('(blank)'),
-        ),
-        FilledButton.tonal(
-          onPressed: !isNetworkSelected ? null : () {},
-          child: const Text('(blank)'),
+          child: const Text('Blank Button'),
         ),
       ],
     );

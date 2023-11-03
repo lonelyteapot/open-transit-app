@@ -12,8 +12,12 @@ import '../core/utils.dart';
 import '../map/map_widget.dart';
 import '../transit_network_selector/current_network_provider.dart';
 import '../transit_network_selector/selector_widget.dart';
+import 'layout_orientation.dart';
 
 const double kSidebarWidth = 400;
+const kSlidingPanelBorderRadius = BorderRadius.vertical(
+  top: Radius.circular(28),
+);
 
 final mapKey = GlobalKey(debugLabel: 'mainMap');
 
@@ -34,7 +38,12 @@ class RegularPageWrapper extends ConsumerWidget {
     final orientation = constraints.maxWidth > 2 * kSidebarWidth
         ? Orientation.landscape
         : Orientation.portrait;
-    return RegularPageScaffold(orientation: orientation, body: body);
+    return ProviderScope(
+      overrides: [
+        layoutOrientationProvider.overrideWithValue(orientation),
+      ],
+      child: RegularPageScaffold(orientation: orientation, body: body),
+    );
   }
 
   @override
@@ -112,6 +121,7 @@ class RegularPageScaffold extends ConsumerWidget {
                 : null,
             icon: const Icon(Icons.settings),
           ),
+          const SizedBox(width: 8.0),
         ],
         automaticallyImplyLeading: false,
       ),
@@ -171,12 +181,55 @@ class _OrientedLayout extends ConsumerWidget {
     );
   }
 
+  Widget _buildPanel(ScrollController scrollController) {
+    assert(body != null);
+    return ProviderScope(
+      overrides: [
+        primaryScrollControllerProvider.overrideWithValue(scrollController),
+      ],
+      child: Builder(
+        builder: (context) {
+          return MediaQuery.removePadding(
+            context: context,
+            removeTop: true,
+            child: SafeArea(
+              child: Stack(
+                alignment: Alignment.topCenter,
+                fit: StackFit.expand,
+                clipBehavior: Clip.none,
+                children: [
+                  ClipRRect(
+                    borderRadius: kSlidingPanelBorderRadius,
+                    child: Theme(
+                      data: Theme.of(context).copyWith(
+                        pageTransitionsTheme: PageTransitionsTheme(
+                          builders: Map.fromIterable(
+                            TargetPlatform.values,
+                            value: (_) =>
+                                const FadeUpwardsPageTransitionsBuilder(),
+                          ),
+                        ),
+                      ),
+                      child: body!,
+                    ),
+                  ),
+                  const Positioned(
+                    top: 0,
+                    child: _DragHandle(),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   Widget _buildPortrait(BuildContext context) {
     final maxPanelHeight =
         MediaQuery.sizeOf(context).height - MediaQuery.paddingOf(context).top;
-    const borderRadius = BorderRadius.vertical(
-      top: Radius.circular(28),
-    );
+
     return ProviderScope(
       overrides: [
         slidingPanelControllerProvider.overrideWith((ref) => PanelController()),
@@ -189,7 +242,7 @@ class _OrientedLayout extends ConsumerWidget {
           return SlidingUpPanel(
             minHeight: 160,
             maxHeight: maxPanelHeight,
-            borderRadius: borderRadius,
+            borderRadius: kSlidingPanelBorderRadius,
             boxShadow: [
               BoxShadow(
                 color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
@@ -200,49 +253,7 @@ class _OrientedLayout extends ConsumerWidget {
             backdropEnabled: true,
             backdropOpacity: 0,
             color: Theme.of(context).colorScheme.surface,
-            panelBuilder: (scrollController) {
-              return ProviderScope(
-                overrides: [
-                  primaryScrollControllerProvider
-                      .overrideWithValue(scrollController),
-                ],
-                child: MediaQuery.removePadding(
-                  context: context,
-                  removeTop: true,
-                  child: SafeArea(
-                    child: Stack(
-                      alignment: Alignment.topCenter,
-                      fit: StackFit.expand,
-                      clipBehavior: Clip.none,
-                      children: [
-                        ClipRRect(
-                          borderRadius: borderRadius,
-                          child: Theme(
-                            data: Theme.of(context).copyWith(
-                              pageTransitionsTheme: PageTransitionsTheme(
-                                builders: Map.fromIterable(
-                                  TargetPlatform.values,
-                                  value: (_) =>
-                                      const FadeUpwardsPageTransitionsBuilder(),
-                                ),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 16.0),
-                              child: body,
-                            ),
-                          ),
-                        ),
-                        const Positioned(
-                          top: 0,
-                          child: _DragHandle(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
+            panelBuilder: _buildPanel,
             body: map,
           );
         },
@@ -251,6 +262,46 @@ class _OrientedLayout extends ConsumerWidget {
   }
 
   Widget _buildLandscape(BuildContext context, WidgetRef ref) {
+    final sidebar = DecoratedBox(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.background,
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          pageTransitionsTheme: PageTransitionsTheme(
+            builders: Map.fromIterable(
+              TargetPlatform.values,
+              value: (_) => const CupertinoPageTransitionsBuilder(),
+            ),
+          ),
+        ),
+        child: Stack(
+          alignment: Alignment.topCenter,
+          clipBehavior: Clip.none,
+          children: [
+            if (body != null) body!,
+            if (dialog != null)
+              SafeArea(
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    dialogTheme: const DialogTheme(
+                      alignment: Alignment.topCenter,
+                    ),
+                  ),
+                  child: dialog!,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -266,45 +317,7 @@ class _OrientedLayout extends ConsumerWidget {
           bottom: 0,
           left: 0,
           width: kSidebarWidth,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.background,
-              boxShadow: [
-                BoxShadow(
-                  color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
-                  blurRadius: 8,
-                ),
-              ],
-            ),
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                pageTransitionsTheme: PageTransitionsTheme(
-                  builders: Map.fromIterable(
-                    TargetPlatform.values,
-                    value: (_) => const CupertinoPageTransitionsBuilder(),
-                  ),
-                ),
-              ),
-              child: Stack(
-                alignment: Alignment.topCenter,
-                clipBehavior: Clip.none,
-                children: [
-                  if (body != null) body!,
-                  if (dialog != null)
-                    SafeArea(
-                      child: Theme(
-                        data: Theme.of(context).copyWith(
-                          dialogTheme: const DialogTheme(
-                            alignment: Alignment.topCenter,
-                          ),
-                        ),
-                        child: dialog!,
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
+          child: sidebar,
         ),
       ],
     );

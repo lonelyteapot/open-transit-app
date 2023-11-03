@@ -20,77 +20,75 @@ class SettingsView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SafeArea(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            'Developer Settings',
-            style: Theme.of(context).textTheme.titleMedium,
-            textAlign: TextAlign.center,
-          ),
-          SwitchListTile(
-            title: const Text('Show debugging info'),
-            value: ref.watch(settingsProvider).showDebugInfo,
-            onChanged: (value) {
-              final settingsNotifier = ref.read(settingsProvider.notifier);
-              settingsNotifier.modifyAndSave(
-                (oldSettings) => oldSettings.copyWith(showDebugInfo: value),
-              );
-            },
-          ),
-          SwitchListTile(
-            title: const Text('Cancel map requests'),
-            value: ref.watch(settingsProvider).useCancellableTileProvider,
-            onChanged: (value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Developer Settings',
+          style: Theme.of(context).textTheme.titleMedium,
+          textAlign: TextAlign.center,
+        ),
+        SwitchListTile(
+          title: const Text('Show debugging info'),
+          value: ref.watch(settingsProvider).showDebugInfo,
+          onChanged: (value) {
+            final settingsNotifier = ref.read(settingsProvider.notifier);
+            settingsNotifier.modifyAndSave(
+              (oldSettings) => oldSettings.copyWith(showDebugInfo: value),
+            );
+          },
+        ),
+        SwitchListTile(
+          title: const Text('Cancel map requests'),
+          value: ref.watch(settingsProvider).useCancellableTileProvider,
+          onChanged: (value) {
+            final settingsNotifier = ref.read(settingsProvider.notifier);
+            settingsNotifier.modifyAndSave(
+              (oldSettings) => oldSettings.copyWith(
+                useCancellableTileProvider: value,
+              ),
+            );
+            _showSnackBar(
+              context,
+              'Move the map to unload old tiles for changes to take effect',
+            );
+          },
+        ),
+        SwitchListTile(
+          title: const Text('Use mock data'),
+          value: ref.watch(settingsProvider).useMockData,
+          onChanged: (value) {
+            final settingsNotifier = ref.read(settingsProvider.notifier);
+            settingsNotifier.modifyAndSave(
+              (oldSettings) => oldSettings.copyWith(useMockData: value),
+            );
+          },
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: TextField(
+            enabled: !ref.watch(settingsProvider).useMockData,
+            controller: TextEditingController(
+              text: ref.watch(settingsProvider).graphqlEndpointUrl,
+            ),
+            decoration: const InputDecoration(
+              labelText: 'GraphQL endpoint url',
+              hintText: 'http://127.0.0.1/graphql',
+            ),
+            keyboardType: TextInputType.url,
+            onSubmitted: (value) {
               final settingsNotifier = ref.read(settingsProvider.notifier);
               settingsNotifier.modifyAndSave(
                 (oldSettings) => oldSettings.copyWith(
-                  useCancellableTileProvider: value,
+                  graphqlEndpointUrl: value,
                 ),
               );
-              _showSnackBar(
-                context,
-                'Move the map to unload old tiles for changes to take effect',
-              );
             },
           ),
-          SwitchListTile(
-            title: const Text('Use mock data'),
-            value: ref.watch(settingsProvider).useMockData,
-            onChanged: (value) {
-              final settingsNotifier = ref.read(settingsProvider.notifier);
-              settingsNotifier.modifyAndSave(
-                (oldSettings) => oldSettings.copyWith(useMockData: value),
-              );
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: TextField(
-              enabled: !ref.watch(settingsProvider).useMockData,
-              controller: TextEditingController(
-                text: ref.watch(settingsProvider).graphqlEndpointUrl,
-              ),
-              decoration: const InputDecoration(
-                labelText: 'GraphQL endpoint url',
-                hintText: 'http://127.0.0.1/graphql',
-              ),
-              keyboardType: TextInputType.url,
-              onSubmitted: (value) {
-                final settingsNotifier = ref.read(settingsProvider.notifier);
-                settingsNotifier.modifyAndSave(
-                  (oldSettings) => oldSettings.copyWith(
-                    graphqlEndpointUrl: value,
-                  ),
-                );
-              },
-            ),
-          ),
-          const Spacer(),
-          const _AppInfo(),
-        ],
-      ),
+        ),
+        const Spacer(),
+        const _AppInfo(),
+      ],
     );
   }
 }

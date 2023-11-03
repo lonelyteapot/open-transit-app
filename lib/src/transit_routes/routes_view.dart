@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../core/providers.dart';
 import 'route_model.dart';
 import 'route_provider.dart';
 
@@ -11,27 +10,16 @@ class RoutesView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transitRoutes = ref.watch(transitRoutesProvider);
-    return Container(
-      padding: const EdgeInsets.only(top: 12),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.background,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      child: PrimaryScrollController(
-        controller: ref.watch(primaryScrollControllerProvider),
-        automaticallyInheritForPlatforms: TargetPlatform.values.toSet(),
-        child: switch (transitRoutes) {
-          AsyncData(value: final routes) => ListView.builder(
-              itemCount: routes.length,
-              itemBuilder: (context, index) {
-                return _RouteTile(route: routes[index]);
-              },
-            ),
-          AsyncError(:final error) => Center(child: Text('Error: $error')),
-          _ => const Center(child: CircularProgressIndicator()),
-        },
-      ),
-    );
+    return switch (transitRoutes) {
+      AsyncData(value: final routes) => ListView.builder(
+          itemCount: routes.length,
+          itemBuilder: (context, index) {
+            return _RouteTile(route: routes[index]);
+          },
+        ),
+      AsyncError(:final error) => Center(child: Text('Error: $error')),
+      _ => const Center(child: CircularProgressIndicator()),
+    };
   }
 }
 

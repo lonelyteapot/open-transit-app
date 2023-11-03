@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../home/home_view.dart';
+import '../layout/default_page_wrapper.dart';
 import '../layout/home_layout.dart';
 import '../settings/settings_view.dart';
 import '../transit_routes/routes_view.dart';
@@ -30,19 +31,27 @@ GoRouter router(RouterRef ref) {
         routes: [
           GoRoute(
             path: '/',
-            builder: (context, state) => const MainView(),
+            builder: (context, state) => const DefaultPageWrapper(
+              child: MainView(),
+            ),
             routes: [
               GoRoute(
                 path: 'settings',
-                builder: (context, state) => const SettingsView(),
+                builder: (context, state) => const DefaultPageWrapper(
+                  child: SettingsView(),
+                ),
               ),
               GoRoute(
                 path: ':network_id',
-                builder: (context, state) => const MainView(),
+                builder: (context, state) => const DefaultPageWrapper(
+                  child: MainView(),
+                ),
                 routes: [
                   GoRoute(
                     path: 'routes',
-                    builder: (context, state) => const RoutesView(),
+                    builder: (context, state) => const DefaultPageWrapper(
+                      child: RoutesView(),
+                    ),
                   ),
                 ],
               ),

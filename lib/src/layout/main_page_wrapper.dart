@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/providers.dart';
-import '../layout/home_layout.dart';
 import 'layout_orientation.dart';
+import 'main_layout.dart';
 
-class DefaultPageWrapper extends ConsumerWidget {
-  const DefaultPageWrapper({
+class MainPageWrapper extends ConsumerWidget {
+  const MainPageWrapper({
     super.key,
     this.child = const SizedBox(),
   });

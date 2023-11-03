@@ -3,8 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../home/home_view.dart';
-import '../layout/default_page_wrapper.dart';
-import '../layout/home_layout.dart';
+import '../layout/main_page_wrapper.dart';
+import '../layout/main_shell.dart';
 import '../settings/settings_view.dart';
 import '../transit_routes/routes_view.dart';
 
@@ -24,32 +24,32 @@ GoRouter router(RouterRef ref) {
     routes: [
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
-        builder: (context, state, child) => RegularPageWrapper(
+        builder: (context, state, child) => MainShell(
           body: child,
           goRouterState: state,
         ),
         routes: [
           GoRoute(
             path: '/',
-            builder: (context, state) => const DefaultPageWrapper(
+            builder: (context, state) => const MainPageWrapper(
               child: MainView(),
             ),
             routes: [
               GoRoute(
                 path: 'settings',
-                builder: (context, state) => const DefaultPageWrapper(
+                builder: (context, state) => const MainPageWrapper(
                   child: SettingsView(),
                 ),
               ),
               GoRoute(
                 path: ':network_id',
-                builder: (context, state) => const DefaultPageWrapper(
+                builder: (context, state) => const MainPageWrapper(
                   child: MainView(),
                 ),
                 routes: [
                   GoRoute(
                     path: 'routes',
-                    builder: (context, state) => const DefaultPageWrapper(
+                    builder: (context, state) => const MainPageWrapper(
                       child: RoutesView(),
                     ),
                   ),

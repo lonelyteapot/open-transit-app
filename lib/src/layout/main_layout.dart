@@ -12,7 +12,6 @@ import '../core/utils.dart';
 import '../map/map_widget.dart';
 import '../transit_network_selector/current_network_provider.dart';
 import '../transit_network_selector/selector_widget.dart';
-import 'layout_orientation.dart';
 
 const double kSidebarWidth = 400;
 const kSlidingPanelBorderRadius = BorderRadius.vertical(
@@ -21,52 +20,8 @@ const kSlidingPanelBorderRadius = BorderRadius.vertical(
 
 final mapKey = GlobalKey(debugLabel: 'mainMap');
 
-class RegularPageWrapper extends ConsumerWidget {
-  const RegularPageWrapper({
-    super.key,
-    required this.body,
-    required this.goRouterState,
-  });
-
-  final Widget body;
-  final GoRouterState goRouterState;
-
-  Widget _buildWithConstraints(
-    BuildContext context,
-    BoxConstraints constraints,
-  ) {
-    final orientation = constraints.maxWidth > 2 * kSidebarWidth
-        ? Orientation.landscape
-        : Orientation.portrait;
-    return ProviderScope(
-      overrides: [
-        layoutOrientationProvider.overrideWithValue(orientation),
-      ],
-      child: RegularPageScaffold(orientation: orientation, body: body),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return ProviderScope(
-      overrides: [
-        goRouterStateProvider.overrideWithValue(goRouterState),
-      ],
-      child: Consumer(
-        builder: (context, ref, _) {
-          // It's a hack for something, prevents issues from lazy-loading
-          ref.listen(currentTransitNetworkProvider, (_, __) {});
-          return LayoutBuilder(
-            builder: _buildWithConstraints,
-          );
-        },
-      ),
-    );
-  }
-}
-
-class RegularPageScaffold extends ConsumerWidget {
-  const RegularPageScaffold({
+class MainLayout extends ConsumerWidget {
+  const MainLayout({
     super.key,
     required this.orientation,
     required this.body,

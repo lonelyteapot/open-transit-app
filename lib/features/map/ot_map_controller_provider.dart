@@ -1,6 +1,5 @@
+import 'package:open_transit_app/features/map/ot_map_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import 'ot_map_controller.dart';
 
 part 'ot_map_controller_provider.g.dart';
 

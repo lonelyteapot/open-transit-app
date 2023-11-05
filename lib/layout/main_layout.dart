@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:open_transit_app/features/map/map_widget.dart';
+import 'package:open_transit_app/features/network_selection/current_network_provider.dart';
+import 'package:open_transit_app/features/network_selection/selector_widget.dart';
+import 'package:open_transit_app/routing/router_extension.dart';
+import 'package:open_transit_app/utils/misc_providers.dart';
+import 'package:open_transit_app/utils/utils.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-
-import '../../features/map/map_widget.dart';
-import '../../routing/router_extension.dart';
-import '../features/network_selection/current_network_provider.dart';
-import '../features/network_selection/selector_widget.dart';
-import '../utils/misc_providers.dart';
-import '../utils/utils.dart';
 
 const double kSidebarWidth = 400;
 const kSlidingPanelBorderRadius = BorderRadius.vertical(

@@ -1,12 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:open_transit_app/data/constants.dart';
+import 'package:open_transit_app/features/settings/settings_provider.dart';
+import 'package:open_transit_app/utils/utils.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../data/constants.dart';
-import '../../utils/utils.dart';
-import 'settings_provider.dart';
 
 part 'settings_page.g.dart';
 

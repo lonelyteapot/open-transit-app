@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:open_transit_app/data/constants.dart';
+import 'package:open_transit_app/data/shared_preferences_provider.dart';
+import 'package:open_transit_app/features/settings/settings_provider.dart';
+import 'package:open_transit_app/routing/router.dart';
+import 'package:open_transit_app/utils/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'data/constants.dart';
-import 'data/shared_preferences_provider.dart';
-import 'features/settings/settings_provider.dart';
-import 'routing/router.dart';
-import 'utils/logging.dart';
 
 Future<void> main() async {
   logger.d('Initializing $kAppNameBase app');

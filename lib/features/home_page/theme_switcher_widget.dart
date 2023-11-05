@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../settings/settings_provider.dart';
+import 'package:open_transit_app/features/settings/settings_provider.dart';
 
 class ThemeSwitcher extends ConsumerWidget {
   const ThemeSwitcher({super.key});

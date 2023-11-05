@@ -3,15 +3,14 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:open_transit_app/features/home_page/network_switcher_widget.dart';
+import 'package:open_transit_app/features/home_page/theme_switcher_widget.dart';
+import 'package:open_transit_app/features/network_selection/current_network_provider.dart';
+import 'package:open_transit_app/utils/misc_providers.dart';
+import 'package:open_transit_app/utils/utils.dart';
+import 'package:open_transit_app/utils/web_utils/web_utils.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/link.dart';
-
-import '../../utils/misc_providers.dart';
-import '../../utils/utils.dart';
-import '../../utils/web_utils/web_utils.dart';
-import '../network_selection/current_network_provider.dart';
-import 'network_switcher_widget.dart';
-import 'theme_switcher_widget.dart';
 
 part 'home_page.g.dart';
 

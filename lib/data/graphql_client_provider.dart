@@ -1,7 +1,6 @@
 import 'package:graphql/client.dart';
+import 'package:open_transit_app/features/settings/settings_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../features/settings/settings_provider.dart';
 
 part 'graphql_client_provider.g.dart';
 

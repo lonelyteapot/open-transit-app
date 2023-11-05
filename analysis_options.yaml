@@ -20,9 +20,9 @@ linter:
   # Reference: https://dart.dev/tools/linter-rules#rules
   rules:
     # Error rules
+    - always_use_package_imports
     - avoid_slow_async_io
     - discarded_futures
-    - prefer_relative_imports
     - unsafe_html
 
     # Style rules

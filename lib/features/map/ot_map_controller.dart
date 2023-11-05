@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../utils/logging.dart';
+import 'package:open_transit_app/utils/logging.dart';
 
 final LatLngBounds kWorldBounds = LatLngBounds(
   const LatLng(-90, -180),

@@ -1,10 +1,9 @@
 import 'dart:async';
 
+import 'package:open_transit_app/data/shared_preferences_provider.dart';
+import 'package:open_transit_app/features/settings/settings_model.dart';
+import 'package:open_transit_app/features/settings/settings_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../data/shared_preferences_provider.dart';
-import 'settings_model.dart';
-import 'settings_repository.dart';
 
 part 'settings_provider.g.dart';
 

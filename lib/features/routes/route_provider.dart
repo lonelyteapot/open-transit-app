@@ -1,12 +1,11 @@
+import 'package:open_transit_app/data/graphql_client_provider.dart';
+import 'package:open_transit_app/features/network_selection/current_network_provider.dart';
+import 'package:open_transit_app/features/routes/gql_route_repo.dart';
+import 'package:open_transit_app/features/routes/mock_route_repo.dart';
+import 'package:open_transit_app/features/routes/route_model.dart';
+import 'package:open_transit_app/features/routes/route_repo.dart';
+import 'package:open_transit_app/features/settings/settings_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../data/graphql_client_provider.dart';
-import '../network_selection/current_network_provider.dart';
-import '../settings/settings_provider.dart';
-import 'gql_route_repo.dart';
-import 'mock_route_repo.dart';
-import 'route_model.dart';
-import 'route_repo.dart';
 
 part 'route_provider.g.dart';
 

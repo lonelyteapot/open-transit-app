@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:open_transit_app/features/networks/network_model.dart';
+import 'package:open_transit_app/features/networks/network_provider.dart';
+import 'package:open_transit_app/utils/misc_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../utils/misc_providers.dart';
-import '../networks/network_model.dart';
-import '../networks/network_provider.dart';
 
 part 'current_network_provider.g.dart';
 

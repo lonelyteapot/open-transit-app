@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'route_model.dart';
-import 'route_repo.dart';
+import 'package:open_transit_app/features/routes/route_model.dart';
+import 'package:open_transit_app/features/routes/route_repo.dart';
 
 class MockTransitRouteRepository implements TransitRouteRepository {
   const MockTransitRouteRepository();

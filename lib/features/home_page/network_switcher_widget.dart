@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../network_selection/current_network_provider.dart';
+import 'package:open_transit_app/features/network_selection/current_network_provider.dart';
 
 class NetworkSwitcher extends ConsumerStatefulWidget {
   const NetworkSwitcher({super.key});

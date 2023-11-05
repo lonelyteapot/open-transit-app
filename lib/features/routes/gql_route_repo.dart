@@ -1,10 +1,9 @@
 import 'dart:async';
 
 import 'package:graphql/client.dart';
-
-import '../../utils/utils.dart';
-import 'route_model.dart';
-import 'route_repo.dart';
+import 'package:open_transit_app/features/routes/route_model.dart';
+import 'package:open_transit_app/features/routes/route_repo.dart';
+import 'package:open_transit_app/utils/utils.dart';
 
 final gqlGetRoutesForNetwork = gql(r'''
   query GetRoutesForNetwork($networkId: UUID!) {

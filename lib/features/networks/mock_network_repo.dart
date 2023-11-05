@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:decimal/decimal.dart';
 
-import 'network_model.dart';
-import 'network_repo.dart';
+import 'package:open_transit_app/features/networks/network_model.dart';
+import 'package:open_transit_app/features/networks/network_repo.dart';
 
 class MockTransitNetworkRepository implements TransitNetworkRepository {
   const MockTransitNetworkRepository();

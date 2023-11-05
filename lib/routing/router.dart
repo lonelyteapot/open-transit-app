@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:open_transit_app/features/home_page/home_page.dart';
+import 'package:open_transit_app/features/routes/routes_view.dart';
+import 'package:open_transit_app/features/settings/settings_page.dart';
+import 'package:open_transit_app/layout/main_page_wrapper.dart';
+import 'package:open_transit_app/layout/main_shell.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../features/settings/settings_page.dart';
-import '../../layout/main_page_wrapper.dart';
-import '../../layout/main_shell.dart';
-import '../features/home_page/home_page.dart';
-import '../features/routes/routes_view.dart';
 
 part 'router.g.dart';
 

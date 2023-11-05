@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'route_model.dart';
-import 'route_provider.dart';
+import 'package:open_transit_app/features/routes/route_model.dart';
+import 'package:open_transit_app/features/routes/route_provider.dart';
 
 class RoutesView extends ConsumerWidget {
   const RoutesView({super.key});

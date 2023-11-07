@@ -92,7 +92,9 @@ jobs:
           name: android-build
           path: android
       - name: Move Android APK
-        run: mv android/app-release.apk dist/open-transit-dev.apk
+        run: |
+          mkdir dist/downloads
+          mv android/app-release.apk dist/downloads/open-transit-dev.apk
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v2
         with:

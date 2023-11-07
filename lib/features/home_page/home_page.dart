@@ -17,7 +17,9 @@ part 'home_page.g.dart';
 @riverpod
 Uri? apkDownloadUrl(ApkDownloadUrlRef ref) {
   // Non-null only on Web
-  return WebUtils.instance?.getBaseUrl()?.resolve('open-transit.apk');
+  return WebUtils.instance
+      ?.getBaseUrl()
+      ?.resolve('downloads/open-transit-dev.apk');
 }
 
 class HomePage extends ConsumerWidget {

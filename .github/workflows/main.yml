@@ -10,8 +10,8 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  FLUTTER_VERSION: "3.16.0-0.3.pre"
-  FLUTTER_CHANNEL: "beta"
+  FLUTTER_VERSION: "3.19.5"
+  FLUTTER_CHANNEL: "stable"
 
 jobs:
   android_build:

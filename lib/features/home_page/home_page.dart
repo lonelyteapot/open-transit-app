@@ -16,6 +16,8 @@ part 'home_page.g.dart';
 
 @riverpod
 Uri? apkDownloadUrl(ApkDownloadUrlRef ref) {
+  // TODO: resolve this
+  return null;
   // Non-null only on Web
   return WebUtils.instance
       ?.getBaseUrl()

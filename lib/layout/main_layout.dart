@@ -68,6 +68,7 @@ class MainLayout extends ConsumerWidget {
                 onPressed: null,
                 icon: Icon(Icons.home_work_rounded),
               ),
+        title: const Text('Develpoment preview', textScaler: TextScaler.linear(0.75)),
         actions: [
           IconButton(
             onPressed: enableSettingsButton

@@ -14,33 +14,33 @@ env:
   FLUTTER_CHANNEL: "stable"
 
 jobs:
-  android_build:
-    name: Build for Android
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          channel: ${{ env.FLUTTER_CHANNEL }}
-          cache: true
-          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
-          cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
-          architecture: x64
-      - name: Disable Flutter telemetry
-        run: flutter --disable-analytics
-      - name: Install dependencies
-        run: flutter pub get --enforce-lockfile
-      - name: Build for Android
-        run: flutter build apk --dart-define MAPBOX_ACCESS_TOKEN=${{ secrets.MAPBOX_ACCESS_TOKEN }}
-      - name: Upload Android artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: android-build
-          path: build/app/outputs/flutter-apk/
-          retention-days: 7
+  # android_build:
+  #   name: Build for Android
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     - name: Setup Flutter
+  #       uses: subosito/flutter-action@v2
+  #       with:
+  #         flutter-version: ${{ env.FLUTTER_VERSION }}
+  #         channel: ${{ env.FLUTTER_CHANNEL }}
+  #         cache: true
+  #         cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+  #         cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
+  #         architecture: x64
+  #     - name: Disable Flutter telemetry
+  #       run: flutter --disable-analytics
+  #     - name: Install dependencies
+  #       run: flutter pub get --enforce-lockfile
+  #     - name: Build for Android
+  #       run: flutter build apk --dart-define MAPBOX_ACCESS_TOKEN=${{ secrets.MAPBOX_ACCESS_TOKEN }}
+  #     - name: Upload Android artifact
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: android-build
+  #         path: build/app/outputs/flutter-apk/
+  #         retention-days: 7
 
   web_build:
     name: Build for Web
@@ -72,7 +72,7 @@ jobs:
 
   deploy:
     name: Deploy to GitHub Pages
-    needs: [android_build, web_build]
+    needs: [web_build]
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -86,15 +86,15 @@ jobs:
         with:
           name: web-build
           path: dist
-      - name: Download Android artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: android-build
-          path: android
-      - name: Move Android APK
-        run: |
-          mkdir dist/downloads
-          mv android/app-release.apk dist/downloads/open-transit-dev.apk
+      # - name: Download Android artifact
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: android-build
+      #     path: android
+      # - name: Move Android APK
+      #   run: |
+      #     mkdir dist/downloads
+      #     mv android/app-release.apk dist/downloads/open-transit-dev.apk
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v2
         with:
